@@ -41,6 +41,10 @@ module.exports = function (grunt) {
         files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
         tasks: ['compass:server', 'autoprefixer']
       },
+      less: {
+        files: ['<%= yeoman.app %>/styles/**/*.less'],
+        tasks: ['less','autoprefixer']
+      },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
         tasks: ['copy:styles', 'autoprefixer']
@@ -177,6 +181,30 @@ module.exports = function (grunt) {
         }
       }
     },
+      less: {
+          options: {
+              paths: ['app/components'],
+              //dumpLineNumbers: true
+          },
+          dist: {
+              files: [{
+                  expand: true,
+                  cwd: '<%= yeoman.app %>/styles/',
+                  src: ['**/*.less'],
+                  dest: '.tmp/styles/',
+                  ext: '.css'
+              }]
+          },
+          server: {
+              files: [{
+                  expand: true,
+                  cwd: '<%= yeoman.app %>/styles/',
+                  src: ['**/*.less'],
+                  dest: '.tmp/styles/',
+                  ext: '.css'
+              }]
+          }
+      },
     // not used since Uglify task does concat,
     // but still available if needed
     /*concat: {
@@ -295,17 +323,20 @@ module.exports = function (grunt) {
     concurrent: {
       server: [
         'coffee:dist',
-        'compass:server',
+        //'compass:server',
+        'less:server',
         'copy:styles'
       ],
       test: [
         'coffee',
-        'compass',
+        //'compass',
+        'less',
         'copy:styles'
       ],
       dist: [
         'coffee',
-        'compass:dist',
+        //'compass:dist',
+        'less:dist',
         'copy:styles',
         'imagemin',
         'svgmin',
