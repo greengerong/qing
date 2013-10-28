@@ -42,7 +42,7 @@ module.exports = function (grunt) {
         tasks: ['compass:server', 'autoprefixer']
       },
       less: {
-        files: ['<%= yeoman.app %>/styles/**/*.less'],
+        files: ['<%= yeoman.app %>/styles/{,*/}*.less'],
         tasks: ['less','autoprefixer']
       },
       styles: {
