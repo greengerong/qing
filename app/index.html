@@ -22,14 +22,22 @@
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
+    <header class="navbar navbar-inverse" role="banner">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="./" class="navbar-brand">Qing</a>
+            </div>
+        </div>
+    </header>
 
-    <div class="container" ng-view="">
+    <div class="container" ng-view>
 
     </div>
 
     <!-- build:js scripts/plugins.js -->
         <script src="bower_components/jquery/jquery.js"></script>
         <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-ui-bootstrap/dist/ui-bootstrap-0.6.0.js"></script>
     <!-- endbuild -->
 
     <!-- build:js scripts/modules.js -->
@@ -41,6 +49,7 @@
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/main.js"></script>
+    <script src="scripts/directives/qing.add/qing.add.js"></script>
     <!-- endbuild -->
 
 </body>

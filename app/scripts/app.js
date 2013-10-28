@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('qingApp', [])
+angular.module('qingApp',['qing.add'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
