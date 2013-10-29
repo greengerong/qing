@@ -4,7 +4,7 @@
 </div>
 <div class="modal-body">
     <strong>Total column</strong>
-    <input type="number" max="12" ng-model="totalColumn" model-format="int"
+    <input type="number" min="0" max="12" ng-model="totalColumn" model-format="int"
            formatter="formatter($modelValue);"
            parser="parserRange($viewValue,'totalColumn')"
     />

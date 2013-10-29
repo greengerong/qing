@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('qing.add', [])
-    .directive('qing.add', function () {
+    .directive('qingAdd', function () {
         return {
-            templateUrl: 'scripts/directives/qing.add/qing.add.html',
+            templateUrl: 'scripts/directives/qingAdd/qingAdd.html',
             restrict: 'E',
             transclude: true,
             link: function postLink(scope, element, attrs) {
