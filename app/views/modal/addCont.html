@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">ADD CONTAINER</h4>
+</div>
+<div class="modal-body">
+    <strong>Total column</strong>
+    <input type="number" max="12" ng-model="totalColumn" model-format="int"
+           formatter="formatter($modelValue);"
+           parser="parserRange($viewValue,'totalColumn')"
+    />
+    <ul>
+        <li ng-repeat="item in totalColumn">
+            <input type="text" ng-style=""/>
+        </li>
+    </ul>
+
+
+</div>
+<div class="modal-footer">
+</div>

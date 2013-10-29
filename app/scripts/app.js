@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('qingApp',['qing.add'])
+angular.module('qingApp',['ui.bootstrap','ngmodel.format','qing.add'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
@@ -11,3 +11,4 @@ angular.module('qingApp',['qing.add'])
         redirectTo: '/'
       });
   });
+

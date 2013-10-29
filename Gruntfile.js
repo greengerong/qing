@@ -42,7 +42,7 @@ module.exports = function (grunt) {
         tasks: ['compass:server', 'autoprefixer']
       },
       less: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.less'],
+        files: ['<%= yeoman.app %>/styles/{,*/}*.less','<%= yeoman.app %>/scripts/directives/{,*/}*.less'],
         tasks: ['less','autoprefixer']
       },
       styles: {
@@ -54,7 +54,7 @@ module.exports = function (grunt) {
           livereload: LIVERELOAD_PORT
         },
         files: [
-          '<%= yeoman.app %>/{,*/}*.html',
+          '<%= yeoman.app %>/{,*/}{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
           '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'

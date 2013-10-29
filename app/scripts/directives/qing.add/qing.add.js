@@ -14,10 +14,17 @@ angular.module('qing.add', [])
                     scope.addOpen = !scope.addOpen;
                 };
 
-                scope.addContainer = function(){
+            },
+            controller:["$scope","$modal",function($scope,$modal){
+
+                $scope.addContModal = function(){
+
+                    var modalInstance = $modal.open({
+                        templateUrl: 'views/modal/addCont.html',
+                        controller: 'AddContModalCtrl'
+                    });
 
                 };
-
-            }
+            }]
         };
     });
