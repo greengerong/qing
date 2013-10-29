@@ -3,18 +3,21 @@
     <h4 class="modal-title">ADD CONTAINER</h4>
 </div>
 <div class="modal-body">
-    <strong>Total column</strong>
-    <input type="number" min="0" max="12" ng-model="totalColumn" model-format="int"
-           formatter="formatter($modelValue);"
-           parser="parserRange($viewValue,'totalColumn')"
-    />
-    <ul>
-        <li ng-repeat="item in totalColumn">
-            <input type="text" ng-style=""/>
-        </li>
-    </ul>
-
-
+    <div class="qing-modal-title">
+        <strong>column</strong>
+        <input type="text" ng-model="vm.columnNumber" model-format="int" />
+    </div>
+    <div>
+        <span ng-repeat="item in vm.column | castLast">
+            <input type="text" ng-model="item.md"  class="input" model-format="int" style="width:{{item.md*40}}px"/>
+            <span class="glyphicon glyphicon-plus-sign"></span>
+        </span>
+        <span>
+            <input type="text" ng-value="getValue()"  class="input" ng-readonly="true" style="width:{{getValue()*40}}px"/>
+        </span>
+        =<span ng-bind="vm.totalColumn"></span>
+    </div>
 </div>
 <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
 </div>
