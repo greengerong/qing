@@ -6,15 +6,14 @@ angular.module('qing.design')
             return {
                 templateUrl: 'scripts/directives/qingPanel/qingPanel.html',
                 restrict: 'EA',
-                transclude: true,
+                replace: true,
                 scope: {
-                    currentForm: "="
+                    currentForm: "=",
+                    qingMark:"@"
                 },
                 link: function (scope, element, attrs) {
-
-                    var qingMark = attrs.qingMark;
-
-                    TemplateService.getPanelTemplate(qingMark).then(function (tplContent) {
+                    scope.qingMark = attrs.qingMark;
+                    TemplateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
                         if (tplContent && (tplContent.trim())) {
                             element.find(".content").replaceWith($compile(tplContent.trim())(scope));
                         }

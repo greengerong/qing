@@ -6,11 +6,11 @@ angular.module('qing.product')
 
             this.getPanelTemplate = function (mark) {
 
-                //var tplUrl = String.format(panelConfig.url, mark);
+                // var tplUrl = String.format(panelConfig.url, mark);
                 //return $http.get(tplUrl, {cache: $templateCache});
                 // mock
-                console.log(mark);
-                LocalStorage.put(mark,"<h1>hello from template ! mark = "+mark+"</h1>");
+                // console.log(mark);
+                LocalStorage.put(mark,"<div><h1>hello from template ! mark = {{qingMark}}</h1><pre>{{ {a:1,b:'xxx'} | json}}</pre></div>");
                 var defer = $q.defer();
                 defer.resolve(LocalStorage.get(mark));
                 return defer.promise;
