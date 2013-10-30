@@ -6,25 +6,17 @@ angular.module('qing.add', [])
             templateUrl: 'scripts/directives/qingAdd/qingAdd.html',
             restrict: 'E',
             transclude: true,
-            scope :{},
             link: function(scope, element, attrs) {
-
-                scope.addOpen = false;
-
-                scope.toggleOpen = function () {
-                    scope.addOpen = !scope.addOpen;
-                };
-
-                scope.addCont = function (column) {
-
-                    scope.$parent.vm.containerList.push(column);
-                    console.log( scope.$parent.vm.containerList);
-                    scope.addOpen = false;
-                }
-
             },
             controller: ["$scope", "$modal", function ($scope, $modal) {
-
+                $scope.addOpen = false;
+                $scope.toggleOpen = function () {
+                    $scope.addOpen = !$scope.addOpen;
+                };
+                $scope.addCont = function (column) {
+                    console.log( $scope.$parent.vm);
+                    $scope.addOpen = false;
+                };
                 $scope.addContModal = function () {
                     var modalInstance = $modal.open({
                         templateUrl: 'views/modal/addCont.html',

@@ -13,12 +13,12 @@
   .add-list{
     background-color:#f3f3f3;
     border: 1px solid #ccc;
-    border-bottom:0 none;
+    border-top:0 none;
     position: absolute;
     width:100%;
-    top: -45px;
+    top:100%;
     z-index:2;
-    transform:translate(0,40px);
+    transform:translate(0,-40px);
     transition: all .4s ease;
     opacity: 0;
     text-transform: uppercase;
@@ -27,7 +27,7 @@
       text-align:center;
       height:44px;
       padding:8px 0 8px;
-      border-bottom:1px #ccc dashed;
+      border-top:1px #ccc dashed;
       overflow: hidden;
     }
     li{
@@ -50,9 +50,9 @@
       opacity:1;
     }
     .btn{
-      border-top-left-radius:0;
-      border-top-right-radius:0;
-      border-top:0 none;
+      border-bottom-left-radius:0;
+      border-bottom-right-radius:0;
+      border-bottom:0 none;
       color:#333;
       background-color:#f3f3f3;
     }

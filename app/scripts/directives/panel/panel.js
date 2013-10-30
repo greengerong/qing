@@ -6,13 +6,14 @@ angular.module('qingApp')
             templateUrl: 'scripts/directives/panel/panel.html',
             restrict: 'A',
             transclude: true,
+            scope: true,
             link: function(scope, element, attrs){
-
-            },
-            controller: [ "$scope" , function ($scope) {
-                $scope.vm = {
+                scope.vm = {
                     'containerList': []
                 };
+            },
+            controller: [ "$scope" , function ($scope) {
+
             }]
         };
     });

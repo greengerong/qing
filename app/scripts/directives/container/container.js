@@ -4,7 +4,7 @@ angular.module('qingApp')
     .directive('container', function () {
         return {
             restrict: 'A',
-            scope : true,
+            //scope : true,
             link: function(scope, element, attrs) {
 
 

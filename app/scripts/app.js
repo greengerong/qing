@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('qingApp',['ui.bootstrap','ngmodel.format','qing.config','qing.add'])
+angular.module('qingApp',['ui.bootstrap','ngmodel.format','green.inputmask4angular','qing.config','qing.add'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {

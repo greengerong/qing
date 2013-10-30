@@ -20,9 +20,10 @@ angular.module('qingApp')
             $scope.$watch('vm.columnNumber', function (v) {
                 var length = $scope.vm.column.length;
                 if(length>=v){
-                    $scope.vm.column.slice(0,v);
+                    $scope.vm.column.splice(v);
                 }else{
-                    console.log(v-length)
+                    //$scope.vm.column[length-1].md = null;
+                    console.log();
                     for(var i=0;i<v-length;i++){
                         $scope.vm.column.push({});
                     }
@@ -39,10 +40,25 @@ angular.module('qingApp')
                     return n;
                 }
             };
+            $scope.maskoption = {
+                "mask": "99",
+                "oncomplete": function () {
+                    console.log();
+                    console.log(arguments,"oncomplete!this log form controler");
+                },
+                "onKeyValidation": function () {
+                    console.log("onKeyValidation event happend! this log form controler");
+                }
+            }
+
             $scope.ok = function () {
                $modalInstance.close($scope.vm.column);
             };
             $scope.close = function () {
                 $modalInstance.close();
             };
+
+
+
+
        }]);
