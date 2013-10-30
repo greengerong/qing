@@ -17,7 +17,11 @@ angular.module('qing.design')
                     var tplUrl = 'scripts/directives/qingRootPanel/qingRootPanel.html';
                     $http.get(tplUrl, {cache: $templateCache}).success(function (tplContent) {
                         var formName = toQingFormNameFilter(scope.qingMark);
-                        var formElm = angular.element(tplContent.trim()).attr("name", formName);                        
+                        var formElm = angular.element(tplContent.trim())
+                        .attr("name", formName)
+                        .find("qing-panel")
+                        .attr("qing-mark",scope.qingMark); 
+                                       
                         element.replaceWith($compile(formElm)(scope));
                         scope.currentForm = scope[formName];
                     });

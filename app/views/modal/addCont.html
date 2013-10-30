@@ -2,21 +2,8 @@
     <button type="button" class="close" ng-click="close()" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h4 class="modal-title">ADD CONTAINER</h4>
 </div>
-<div class="modal-body">
-    <div class="qing-modal-title">
-        <strong>column</strong>
-        <input type="text" ng-model="vm.columnNumber" input-mask="'mask'" mask-option="maskoption" />
-    </div>
-    <div>
-        <span ng-repeat="item in vm.column | castLast">
-            <input type="text" ng-model="item.md"  class="input" model-format="int" />
-            <span class="glyphicon glyphicon-plus-sign"></span>
-        </span>
-        <span>
-            <input type="text" ng-value="getValue()"  class="input" ng-readonly="true"/>
-        </span>
-        =<span ng-bind="vm.totalColumn"></span>
-    </div>
+<div class="modal-body" ng-bind-html-unsafe="contentHtml">
+    
 </div>
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="ok()">OK</button>

@@ -8,8 +8,7 @@ angular.module('qing.design')
                 restrict: 'EA',
                 replace: true,
                 scope: {
-                    currentForm: "=",
-                    qingMark:"@"
+                    currentForm: "="
                 },
                 link: function (scope, element, attrs) {
                     scope.qingMark = attrs.qingMark;

@@ -5,30 +5,40 @@ angular.module('qing.design')
         return {
             templateUrl: 'scripts/directives/qingAdd/qingAdd.html',
             restrict: 'EA',
-            transclude: true,
             link: function(scope, element, attrs) {
+                scope.callBack = function(result){
+                    angular.element($compile(result)(scope)).insertBefore(element);
+                };
             },
             controller: ["$scope", "$modal", function ($scope, $modal) {
                 $scope.addOpen = false;
                 $scope.toggleOpen = function () {
                     $scope.addOpen = !$scope.addOpen;
                 };
-                $scope.addCont = function (column) {
-                    console.log( $scope.$parent.vm);
+                $scope.addCont = function () {
                     $scope.addOpen = false;
                 };
-                $scope.addContModal = function () {
+
+                $scope.addContModal = function (pluginName) {
+                    $scope.addOpen = false;
                     var modalInstance = $modal.open({
                         templateUrl: 'views/modal/addCont.html',
                         controller: 'AddContModalCtrl',
                         resolve : {
-                            "column" : function(){
-                                return null;
+                            "plugin" : function(){
+                                var attrs = {};
+                                attrs[pluginName] = "";
+                                var plugin =angular.element("<div></div>")
+                                .attr(attrs);
+                                return plugin;
                             }
                         }
                     });
-                    modalInstance.result.then(function (column) {
-                        $scope.addCont(column);
+                    modalInstance.result.then(function (result) {
+                        //TODO: just for quickly test;
+                        $scope.callBack(result);
+                        // $scope.addCont(column);
+                        console.log("plugin result",result);
                     }, function () {
                     });
                 };

@@ -10,7 +10,7 @@ angular.module('qing.product')
                 //return $http.get(tplUrl, {cache: $templateCache});
                 // mock
                 // console.log(mark);
-                LocalStorage.put(mark,"<div><h1>hello from template ! mark = {{qingMark}}</h1><pre>{{ {a:1,b:'xxx'} | json}}</pre></div>");
+                // LocalStorage.put(mark,"<div><h1>hello from template ! mark = {{qingMark}}</h1><pre>{{ {a:1,b:'xxx'} | json}}</pre></div>");
                 var defer = $q.defer();
                 defer.resolve(LocalStorage.get(mark));
                 return defer.promise;
