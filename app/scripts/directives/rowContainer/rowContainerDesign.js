@@ -47,11 +47,7 @@ angular.module('qing.design')
 
                 $scope.getResult = function () {
                 	//should change;
-                	var elm = angular.element("<div></div>");
-                	var len = $scope.vm.column.length;
-	                for(var i =0 ; i < len; i++){
-	                	elm.append("<div qing-panel></div>");
-	                }
+                	var elm = angular.element("<div row-container data-columns=" + angular.toJson($scope.vm.column) + "></div>");
                 	return elm;
                 };
 
