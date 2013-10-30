@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('qing.add', [])
+angular.module('qing.design')
     .directive('qingAdd', ['$compile',function ($compile) {
         return {
             templateUrl: 'scripts/directives/qingAdd/qingAdd.html',
-            restrict: 'E',
+            restrict: 'EA',
             transclude: true,
             link: function(scope, element, attrs) {
             },
