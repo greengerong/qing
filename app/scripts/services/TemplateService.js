@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('qing.product')
+angular.module('qing.design')
     .service('TemplateService', ["$http", "$templateCache", "panelConfig", "$q", "LocalStorage",
         function ($http, $templateCache, panelConfig, $q, LocalStorage) {
 
@@ -17,6 +17,7 @@ angular.module('qing.product')
 
             this.savePanelTemplate = function (mark,html) {
 
+                //TODO: maybe object
                 if(html.jquery){
                     html = html[0].outerHTML;
                 }

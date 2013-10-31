@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('qing.product')
+angular.module('qing.design')
     .service('Guid', [
         function () {
             this.get = function (mark) {

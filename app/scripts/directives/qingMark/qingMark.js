@@ -9,6 +9,7 @@ angular.module( 'qing.design' )
 
                     TemplateService.getPanelTemplate(attrs.qingMark).then(function (tplContent) {
                         if (tplContent && (tplContent.trim())) {
+                            //TODO: self, not dependent on qing-panel.
                             element.find(".content").replaceWith($compile(tplContent.trim())(scope));
                         }
                     });

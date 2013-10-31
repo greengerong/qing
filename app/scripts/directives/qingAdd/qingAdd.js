@@ -8,6 +8,7 @@ angular.module('qing.design')
             link: function(scope, element, attrs) {
                 scope.callBack = function(result){
                     console.log(scope.qingMark);
+                    //TODO:保存原来的值
                     TemplateService.savePanelTemplate(scope.qingMark,result);
                     angular.element($compile(result)(scope)).insertBefore(element);
                 };

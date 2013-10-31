@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('qing.product')
+angular.module('qing.design')
   .service('LocalStorage', function Cover() {
 
         var KEY = 'qing.localStorage',
