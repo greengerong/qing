@@ -18,7 +18,7 @@ angular.module('qing.design')
             this.savePanelTemplate = function (mark,html) {
 
                 //TODO: maybe object
-                if(html.jquery){
+                if(angular.isObject(html) && html.jquery){
                     html = html[0].outerHTML;
                 }
                 // mock

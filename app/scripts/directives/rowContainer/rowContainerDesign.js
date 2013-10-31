@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('qing.design')
-    .directive('rowContainerDesign', ["$compile", "gridConfig",
-        function ($compile, gridConfig) {
+    .directive('rowContainerDesign', ["$compile", "gridConfig","Guid",
+        function ($compile, gridConfig,Guid) {
             return {
                 templateUrl: 'scripts/directives/rowContainer/rowContainerDesign.html',
                 restrict: 'EA',
@@ -47,8 +47,21 @@ angular.module('qing.design')
 
                 $scope.getResult = function () {
                 	//should change;
-                	var elm = angular.element("<div row-container data-columns=" + angular.toJson($scope.vm.column) + "></div>");
-                	return elm;
+                	//var elm = angular.element("<div row-container data-columns=" + angular.toJson($scope.vm.column) + "></div>");
+                    //return elm;
+
+                    // 我觉得这部分可以直接拼接字符串，否则需要在 row-container
+                    // 这个元素上加上mark 才能存储内部的模板, 而且产品环境下面也可以不关心布局的生成
+                    var html = '<div class="row">';
+                        for(var i= 0,j=$scope.vm.column.length; i<j ;i++){
+                            var value = $scope.vm.column[i].value;
+                            html+='<div class="col-md-'+value+'">';
+                            html+='<qing-panel qing-mark="'+Guid.get()+'" current-form="currentForm"></qing-panel>';
+                            html+='</div>';
+                        }
+                    html+='</div>';
+
+                    return html;
                 };
 
                 }]
