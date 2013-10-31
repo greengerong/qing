@@ -3,8 +3,6 @@
   position:relative;
   .btn{
     display: block;
-    position: relative;
-    z-index: 3;
     &:hover{
       border-color:#ccc;
       background-color:#f3f3f3;
@@ -21,6 +19,7 @@
     transform:translate(0,-40px);
     transition: all .4s ease;
     opacity: 0;
+    display: none;
     text-transform: uppercase;
     ul{
       margin:0 15px;
@@ -48,6 +47,7 @@
     .add-list{
       transform:translate(0,0);
       opacity:1;
+      display:block;
     }
     .btn{
       border-bottom-left-radius:0;

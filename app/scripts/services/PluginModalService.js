@@ -11,4 +11,5 @@ angular.module('qing.design')
 	this.setResult = function(r){
     	 result = r;
     };
-  }]);
+
+}]);

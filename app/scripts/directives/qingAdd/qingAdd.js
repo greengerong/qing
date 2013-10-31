@@ -1,12 +1,14 @@
 'use strict';
 
 angular.module('qing.design')
-    .directive('qingAdd', ['$compile',function ($compile) {
+    .directive('qingAdd', ['$compile',"TemplateService",function ($compile,TemplateService) {
         return {
             templateUrl: 'scripts/directives/qingAdd/qingAdd.html',
             restrict: 'EA',
             link: function(scope, element, attrs) {
                 scope.callBack = function(result){
+                    console.log(scope.qingMark);
+                    TemplateService.savePanelTemplate(scope.qingMark,result);
                     angular.element($compile(result)(scope)).insertBefore(element);
                 };
             },

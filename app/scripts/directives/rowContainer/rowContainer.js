@@ -10,6 +10,7 @@ angular.module('qing.product')
                 scope:true,
                 link: function (scope, element, attrs) {
                     scope.panels = scope.$eval(attrs.columns);
+
                 }
             };
         }]);
