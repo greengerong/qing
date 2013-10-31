@@ -7,6 +7,7 @@ angular.module('qing.product')
                 templateUrl: 'scripts/directives/rowContainer/rowContainer.html',
                 restrict: 'EA',
                 replace: true,
+                scope:true,
                 link: function (scope, element, attrs) {
                     scope.panels = scope.$eval(attrs.columns);
                 }
