@@ -1,0 +1,66 @@
+<!doctype html>
+<!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="css/qing/main.css">
+    <!-- endbuild -->
+
+    <!--[if lt IE 9]>
+    <script src="scripts/lib/ie/es5-shim/es5-shim.js"></script>
+    <script src="scripts/lib/ie/json3/lib/json3.min.js"></script>
+    <![endif]-->
+</head>
+<body ng-app="qing.demo">
+<!--[if lt IE 7]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+    your browser</a> to improve your experience.</p>
+<![endif]-->
+<header class="navbar navbar-inverse" role="banner">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="./" class="navbar-brand">Qing</a>
+        </div>
+    </div>
+</header>
+
+<div ng-view>
+
+</div>
+
+
+<script src="scripts/lib/jquery.js"></script>
+<script src="scripts/lib/angular.js"></script>
+<script src="scripts/lib/angular-resources/ui-bootstrap-tpls.min.js"></script>
+<script src="scripts/lib/angular-resources/ngmodel.format.js"></script>
+<script src="scripts/lib/jquery-resources/jquery.inputmask.bundle.min.js"></script>
+<script src="scripts/lib/angular-resources/green.inputmask4angular.js"></script>
+
+<script src="scripts/lib/angular-resources/angular-resource.js"></script>
+<script src="scripts/lib/angular-resources/angular-cookies.js"></script>
+<script src="scripts/lib/angular-resources/angular-sanitize.js"></script>
+<script src="scripts/lib/angular-resources/bindonce.js"></script>
+
+<script src="scripts/app/app.js"></script>
+
+<% if (!isDesign) { %>
+    <script src="scripts/qing/qing.product.tpl.js"></script>
+<% } %>
+<% if (isDesign)  { %>
+    <script src="scripts/qing/qing.design.tpl.js"></script>
+<% } %>
+
+ <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js"></' + 'script>')</script>
+</body>
+</html>

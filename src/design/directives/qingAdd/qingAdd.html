@@ -1,0 +1,12 @@
+<div class="qing-add" ng-class= "{'open' : addOpen}" >
+    <div class="add-list">
+        <ul>
+            <li><a ng-click="addContModal('row-container-design');"><i class="glyphicon glyphicon-th"></i>Container</a></li>
+            <li><a><i class="glyphicon glyphicon-list-alt"></i>Conponment</a></li>
+        </ul>
+    </div>
+    <a class="btn btn-default" ng-click="toggleOpen()">
+        <i class="glyphicon glyphicon-plus" ng-hide="addOpen"></i>
+        <i class="glyphicon glyphicon-chevron-down" ng-show="addOpen"></i>
+    </a>
+</div>
