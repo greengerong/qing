@@ -195,8 +195,16 @@ module.exports = function (grunt) {
             }
         },
         karma: {
-            unit: {
-                configFile: 'karma.conf.js',
+            product: {
+                configFile: 'karma.conf.product.js',
+                singleRun: true
+            },
+            common: {
+                configFile: 'karma.conf.common.js',
+                singleRun: true
+            },
+            design: {
+                configFile: 'karma.conf.design.js',
                 singleRun: true
             }
         },
@@ -241,8 +249,8 @@ module.exports = function (grunt) {
                 failOnError: true
             },
             run: {
-                command: 'supervisor demo/app.js'
-//                command: 'node demo/app.js'
+//                command: 'supervisor demo/app.js'
+                command: 'node demo/app.js'
             }
         }
     });
@@ -264,17 +272,20 @@ module.exports = function (grunt) {
         'livereload'
     ]);
 
+
+    grunt.registerTask('test', [
+        'build',
+        'karma'
+    ]);
+
     grunt.registerTask('release', [
-        'default',
-//        'karma', should fix unit test
+        'test',
         'ngmin',
         'uglify',
         'cssmin'
     ]);
 
     grunt.registerTask('default', [
-        'build'
-//        'jshint',
-//        'build'
+        'release'
     ]);
 };
