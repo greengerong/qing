@@ -28,6 +28,10 @@ module.exports = function (grunt) {
                     '<%= qing.app %>/**/*.js'
                 ],
                 tasks: ['build', 'livereload']
+            },
+            demo: {
+                files: ['<%= qing.demo %>/public/less/*.less'],
+                tasks: ['less:demo', 'livereload']
             }
         },
         open: {
@@ -174,6 +178,17 @@ module.exports = function (grunt) {
                         cwd: '<%= qing.dist %>/less/',
                         src: ['main.less'],
                         dest: '<%= qing.dist %>/css/',
+                        ext: '.css'
+                    }
+                ]
+            },
+            demo: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= qing.demo %>/public/less/',
+                        src: ['demo.less'],
+                        dest: '<%= qing.demo %>/public/css/',
                         ext: '.css'
                     }
                 ]
