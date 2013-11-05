@@ -4,7 +4,7 @@
 module.exports = function (config) {
     config.set({
         // base path, that will be used to resolve files and exclude
-        basePath: '',
+        basePath: '../../',
 
         // testing framework to use (jasmine/mocha/qunit/...)
         frameworks: ['jasmine'],
@@ -16,8 +16,8 @@ module.exports = function (config) {
             'demo/public/scripts/lib/jquery-resources/**/*.js',
             'demo/public/scripts/lib/angular-resources/**/*.js',
             'test/lib/angular-mocks.js',
-            'dist/js/qing.product.tpl.js',
-            'test/spec/product/**/*.js'
+            'dist/js/qing.design.tpl.js',
+            'test/spec/design/**/*.js'
         ],
 
         // list of files / patterns to exclude
@@ -32,7 +32,7 @@ module.exports = function (config) {
 
 
         // enable / disable watching file and executing tests whenever any file changes
-        autoWatch: false,
+        autoWatch: true,
 
 
         // Start these browsers, currently available:
@@ -43,12 +43,12 @@ module.exports = function (config) {
         // - Safari (only Mac)
         // - PhantomJS
         // - IE (only Windows)
-        browsers: ['PhantomJS'],
+        browsers: ['Chrome'],
 
 
         // Continuous Integration mode
         // if true, it capture browsers, run tests and exit
-        singleRun: true
+        singleRun: false
 
     });
 };

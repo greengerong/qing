@@ -195,17 +195,21 @@ module.exports = function (grunt) {
             }
         },
         karma: {
+            options: {
+                runnerPort: 9999,
+                browsers: ['PhantomJS'],
+                singleRun: true,
+                reporters: 'dots',
+                autoWatch: false
+            },
             product: {
-                configFile: 'karma.conf.product.js',
-                singleRun: true
+                configFile: 'test/config/karma.conf.product.js'
             },
             common: {
-                configFile: 'karma.conf.common.js',
-                singleRun: true
+                configFile: 'test/config/karma.conf.common.js'
             },
             design: {
-                configFile: 'karma.conf.design.js',
-                singleRun: true
+                configFile: 'test/config/karma.conf.design.js'
             }
         },
         ngmin: {
