@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('qing')
+angular.module("qing")
     .directive('qingPanel', ["$compile", "TemplateService",
         function ($compile, TemplateService) {
             return {
-                templateUrl: 'common/directives/qingPanel/qingPanel.html',
-                restrict: 'EA',
+                templateUrl: "common/directives/qingPanel/qingPanel.html",
+                restrict: "EA",
                 replace: true,
                 scope: {
                     currentForm: "="

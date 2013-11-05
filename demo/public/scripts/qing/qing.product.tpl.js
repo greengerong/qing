@@ -5,7 +5,7 @@ angular.module('qing', ["qing.template", 'ui.bootstrap', 'ngmodel.format', 'gree
     });
 
 
-angular.module('qing')
+angular.module("qing")
     .directive('qingPanel', ["$compile", "TemplateService",
         function ($compile, TemplateService) {
             return {

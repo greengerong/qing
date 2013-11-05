@@ -69,8 +69,7 @@ module.exports = function (grunt) {
                 jshintrc: '.jshintrc'
             },
             all: [
-                'Gruntfile.js',
-                '<%= qing.app %>/{,*/}*.js'
+                '<%= qing.app %>/**/*.js'
             ]
         },
         html2js: {
@@ -279,6 +278,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'build',
+//        'jshint',
         'karma'
     ]);
 
