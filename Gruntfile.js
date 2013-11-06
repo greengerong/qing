@@ -95,17 +95,35 @@ module.exports = function (grunt) {
                     return  src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
                 }
             },
-            less: {
+            lessProduct: {
                 options: {
                     banner: "",
                     process: function (src, filepath) {
                         return src;
                     }
                 },
-                src: ['<%= qing.app %>/common/**/*.less',
-                    '<%= qing.app %>/product/**/*.less',
-                    '<%= qing.app %>/design/**/*.less'],
-                dest: '<%= qing.dist %>/less/qing/qing.less'
+                src: ['<%= qing.app %>/product/less/main.less',
+                    '<%= qing.app %>/common/less/variables.less',
+                    '<%= qing.app %>/product/less/variables.less',
+                    '<%= qing.app %>/common/directives/**/*.less',
+                    '<%= qing.app %>/product/directives/**/*.less'
+                ],
+                dest: '<%= qing.dist %>/less/qing-product.less'
+            },
+            lessDesign: {
+                options: {
+                    banner: "",
+                    process: function (src, filepath) {
+                        return src;
+                    }
+                },
+                src: ['<%= qing.app %>/design/less/main.less',
+                    '<%= qing.app %>/common/less/variables.less',
+                    '<%= qing.app %>/design/less/variables.less',
+                    '<%= qing.app %>/common/directives/**/*.less',
+                    '<%= qing.app %>/design/directives/**/*.less'
+                ],
+                dest: '<%= qing.dist %>/less/qing-design.less'
             },
             product: {
                 src: ['<%= qing.app %>/product/qing.js',
@@ -175,7 +193,14 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: '<%= qing.dist %>/less/',
-                        src: ['main.less'],
+                        src: ['qing-design.less'],
+                        dest: '<%= qing.dist %>/css/',
+                        ext: '.css'
+                    },
+                    {
+                        expand: true,
+                        cwd: '<%= qing.dist %>/less/',
+                        src: ['qing-product.less'],
                         dest: '<%= qing.dist %>/css/',
                         ext: '.css'
                     }

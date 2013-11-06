@@ -63,7 +63,7 @@ angular.module("qing")
                     var self = this;
 
                     self.getRootQingMark = function () {
-                        return scope.qingMark;
+                        return $scope.qingMark;
                     };
                 }]
             };

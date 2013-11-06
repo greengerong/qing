@@ -13,7 +13,14 @@
     <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <link rel="stylesheet" href="css/qing/main.css">
+
+    <% if (!isDesign) { %>
+       <link rel="stylesheet" href="css/qing/qing-product.css">
+    <% } %>
+    <% if (isDesign)  { %>
+              <link rel="stylesheet" href="css/qing/qing-design.css">
+    <% } %>
+
     <link rel="stylesheet" href="css/demo.css">
     <!--[if lt IE 9]>
     <script src="scripts/lib/ie/es5-shim/es5-shim.js"></script>
