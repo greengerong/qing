@@ -1,31 +1,35 @@
-/*! qing - v0.0.0 - 2013-11-05 */
+/*! qing - v0.0.0 - 2013-11-06 */
 angular.module('qing', ["qing.template", 'ui.bootstrap', 'ngmodel.format', 'green.inputmask4angular'])
     .constant('panelConfig', {
         "url": "scripts/directives/qingPanel/qingPanel.html?mark={0}"
     });
 
 
-angular.module("qing")
-    .directive('qingPanel', ["$compile", "TemplateService",
-        function ($compile, TemplateService) {
-            return {
-                templateUrl: 'common/directives/qingPanel/qingPanel.html',
-                restrict: 'EA',
-                replace: true,
-                scope: {
-                    currentForm: "="
-                },
-                link: function (scope, element, attrs) {
-                    scope.qingMark = attrs.qingMark;
-                    TemplateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
-                        if (tplContent && (tplContent.trim())) {
-                            element.find(".content").replaceWith($compile(tplContent.trim())(scope));
-                        }
-                    });
+var qing = qing || {};
 
-                }
-            };
-        }]);
+qing.qingPanelDirective = function (phase) {
+    angular.module("qing")
+        .directive('qingPanel', ["$compile", "TemplateService",
+            function ($compile, TemplateService) {
+                return {
+                    templateUrl: String.format("{0}/directives/qingPanel/qingPanel.html", phase),
+                    restrict: "EA",
+                    replace: true,
+                    scope: {
+                        currentForm: "="
+                    },
+                    link: function (scope, element, attrs) {
+                        scope.qingMark = attrs.qingMark;
+                        TemplateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
+                            if (tplContent && (tplContent.trim())) {
+                                element.find(".content").replaceWith($compile(tplContent.trim())(scope));
+                            }
+                        });
+
+                    }
+                };
+            }]);
+}
 
 angular.module('qing')
     .filter("toQingFormName", [function () {
@@ -110,19 +114,30 @@ angular.module('qing')
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingPanel/qingPanel.html', 'common/directives/qingRootPanel/qingRootPanel.html']);
+String.format = function () {
+    var s = arguments[0];
+    for (var i = 0; i < arguments.length - 1; i++) {
+        var reg = new RegExp("\\{" + i + "\\}", "gm");
+        s = s.replace(reg, arguments[i + 1]);
+    }
 
-angular.module("common/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("common/directives/qingPanel/qingPanel.html",
-    "<div class=\"qing-panel\">\n" +
-    "    <div class=\"content\"></div>\n" +
-    "    <qing-add></qing-add>\n" +
-    "</div>");
-}]);
+    return s;
+};
+var qing = qing || {};
+qing.qingPanelDirective("product");
+
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'product/directives/qingPanel/qingPanel.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
     "<form>\n" +
     "    <qing-panel qing-mark=\"{{qingMark}}\" current-form=\"currentForm\"></qing-panel>\n" +
     "</form>");
+}]);
+
+angular.module("product/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product/directives/qingPanel/qingPanel.html",
+    "<div class=\"qing-panel\">\n" +
+    "    <div class=\"content\"></div>\n" +
+    "</div>");
 }]);

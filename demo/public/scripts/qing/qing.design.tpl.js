@@ -1,31 +1,35 @@
-/*! qing - v0.0.0 - 2013-11-05 */
+/*! qing - v0.0.0 - 2013-11-06 */
 angular.module('qing', ["qing.template", 'ui.bootstrap', 'ngmodel.format', 'green.inputmask4angular'])
     .constant('gridConfig', {
         "totalColumn": 12
     });
 
 
-angular.module("qing")
-    .directive('qingPanel', ["$compile", "TemplateService",
-        function ($compile, TemplateService) {
-            return {
-                templateUrl: 'common/directives/qingPanel/qingPanel.html',
-                restrict: 'EA',
-                replace: true,
-                scope: {
-                    currentForm: "="
-                },
-                link: function (scope, element, attrs) {
-                    scope.qingMark = attrs.qingMark;
-                    TemplateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
-                        if (tplContent && (tplContent.trim())) {
-                            element.find(".content").replaceWith($compile(tplContent.trim())(scope));
-                        }
-                    });
+var qing = qing || {};
 
-                }
-            };
-        }]);
+qing.qingPanelDirective = function (phase) {
+    angular.module("qing")
+        .directive('qingPanel', ["$compile", "TemplateService",
+            function ($compile, TemplateService) {
+                return {
+                    templateUrl: String.format("{0}/directives/qingPanel/qingPanel.html", phase),
+                    restrict: "EA",
+                    replace: true,
+                    scope: {
+                        currentForm: "="
+                    },
+                    link: function (scope, element, attrs) {
+                        scope.qingMark = attrs.qingMark;
+                        TemplateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
+                            if (tplContent && (tplContent.trim())) {
+                                element.find(".content").replaceWith($compile(tplContent.trim())(scope));
+                            }
+                        });
+
+                    }
+                };
+            }]);
+}
 
 angular.module('qing')
     .filter("toQingFormName", [function () {
@@ -110,6 +114,15 @@ angular.module('qing')
 
         }]);
 
+String.format = function () {
+    var s = arguments[0];
+    for (var i = 0; i < arguments.length - 1; i++) {
+        var reg = new RegExp("\\{" + i + "\\}", "gm");
+        s = s.replace(reg, arguments[i + 1]);
+    }
+
+    return s;
+};
 angular.module('qing')
     .directive('qingAdd', ['$compile',"TemplateService",function ($compile,TemplateService) {
         return {
@@ -160,6 +173,8 @@ angular.module('qing')
         };
     }]);
 
+var qing = qing || {};
+qing.qingPanelDirective("design");
 angular.module('qing')
     .directive('rowContainerDesign', ["$compile", "gridConfig","Guid",
         function ($compile, gridConfig,Guid) {
@@ -274,15 +289,7 @@ angular.module('qing')
 
     }]);
 
-angular.module('qing.template', ['common/directives/qingPanel/qingPanel.html', 'common/directives/qingRootPanel/qingRootPanel.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/rowContainer/rowContainer.html', 'design/services/modal/addCont.html']);
-
-angular.module("common/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("common/directives/qingPanel/qingPanel.html",
-    "<div class=\"qing-panel\">\n" +
-    "    <div class=\"content\"></div>\n" +
-    "    <qing-add></qing-add>\n" +
-    "</div>");
-}]);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/services/modal/addCont.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
@@ -304,6 +311,14 @@ angular.module("design/directives/qingAdd/qingAdd.html", []).run(["$templateCach
     "        <i class=\"glyphicon glyphicon-plus\" ng-hide=\"addOpen\"></i>\n" +
     "        <i class=\"glyphicon glyphicon-chevron-down\" ng-show=\"addOpen\"></i>\n" +
     "    </a>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/qingPanel/qingPanel.html",
+    "<div class=\"qing-panel\">\n" +
+    "    <div class=\"content\"></div>\n" +
+    "    <qing-add></qing-add>\n" +
     "</div>");
 }]);
 
