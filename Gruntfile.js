@@ -36,7 +36,7 @@ module.exports = function (grunt) {
         },
         open: {
             server: {
-                url: 'http://localhost:3000'
+                url: 'http://localhost:3000?design'
             }
         },
         clean: {
@@ -271,8 +271,9 @@ module.exports = function (grunt) {
     grunt.registerTask('server', [
         'build',
         'shell:run',
-        'watch' ,
-        'livereload'
+        'open',
+        'livereload',
+        'watch'
     ]);
 
 

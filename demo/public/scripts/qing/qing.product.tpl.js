@@ -31,32 +31,41 @@ qing.qingPanelDirective = function (phase) {
             }]);
 }
 
-angular.module('qing')
+angular.module("qing")
     .filter("toQingFormName", [function () {
         return function (name) {
             return "form_" + name.replace(/[^a-zA-Z0-9_]/g, "");
         };
     }])
-    .directive('qingRootPanel', ["toQingFormNameFilter", "$http", "$compile", "$templateCache",
+    .directive("qingRootPanel", ["toQingFormNameFilter", "$http", "$compile", "$templateCache",
         function (toQingFormNameFilter, $http, $compile, $templateCache) {
+
+            var tplUrl = 'common/directives/qingRootPanel/qingRootPanel.html';
+
             return {
-                restrict: 'EA',
+                restrict: "EA",
                 scope: {
                 },
                 link: function (scope, element, attrs) {
                     scope.qingMark = attrs.qingMark;
-                    var tplUrl = 'common/directives/qingRootPanel/qingRootPanel.html';
-                    $http.get(tplUrl, {cache: $templateCache}).success(function (tplContent) {
-                        var formName = toQingFormNameFilter(scope.qingMark);
-                        var formElm = angular.element(tplContent.trim())
-                        .attr("name", formName)
-                        .find("qing-panel")
-                        .attr("qing-mark",scope.qingMark); 
-                                       
-                        element.replaceWith($compile(formElm)(scope));
-                        scope.currentForm = scope[formName];
-                    });
-                }
+                    $http.get(tplUrl, {cache: $templateCache})
+                        .success(function (tplContent) {
+                            var formName = toQingFormNameFilter(scope.qingMark);
+                            var formElm = angular.element(tplContent.trim())
+                                .attr("name", formName)
+                                .find("qing-panel")
+                                .attr("qing-mark", scope.qingMark);
+
+                            element.replaceWith($compile(formElm)(scope));
+                        });
+                },
+                controller: ["$scope", function ($scope) {
+                    var self = this;
+
+                    self.getRootQingMark = function () {
+                        return scope.qingMark;
+                    };
+                }]
             };
         }]);
 
