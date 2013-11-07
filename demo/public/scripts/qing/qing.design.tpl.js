@@ -1,5 +1,5 @@
 /*! qing - v0.0.0 - 2013-11-08 */
-angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular"])
+angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular" ,"ui"])
     .constant("gridConfig", {
         "totalColumn": 12
     });
@@ -140,7 +140,9 @@ String.format = function () {
 angular.module("qing")
     .directive("pluginName", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService", "templateService",
         function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService) {
-            var tplUrl = "design/directives/pluginName/pluginName.html";
+            var tplUrl = "design/directives/pluginName/pluginName.html",
+                toolBarHightLightClass = "tool-bar-hight-light";
+
             return {
                 restrict: "EA",
                 scope: {
@@ -159,13 +161,13 @@ angular.module("qing")
                         $timeout(function () {
                             scope.showDesignToolBar = true;
                         });
-                        element.addClass("tool-bar-hight-light");
+                        element.addClass(toolBarHightLightClass);
                         e.stopPropagation();
                     }).on("mouseout", function (e) {
                             $timeout(function () {
                                 scope.showDesignToolBar = false;
                             });
-                            element.removeClass("tool-bar-hight-light");
+                            element.removeClass(toolBarHightLightClass);
                             e.stopPropagation();
                         });
 
@@ -443,7 +445,6 @@ angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$
 angular.module("design/directives/pluginName/pluginName.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/pluginName/pluginName.html",
     "<div class=\"design-tool-bar\" ng-show=\"showDesignToolBar\">\n" +
-    "    <!--<h3>panel title</h3>-->\n" +
     "    <div class=\"btn-group\">\n" +
     "        <a class=\"qing-panel-edit\" title=\"edit\" ng-click=\"edit();\"><i class=\"glyphicon glyphicon-edit\"></i></a>\n" +
     "        <a class=\"qing-panel-delete\" title=\"remove\" ng-click=\"remove();\"><i class=\"glyphicon glyphicon-remove\"></i></a>\n" +
@@ -501,7 +502,7 @@ angular.module("design/directives/rowContainer/rowContainer.html", []).run(["$te
 
 angular.module("design/directives/rowContainer/rowContainerResult.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/rowContainer/rowContainerResult.html",
-    "<div class=\"row row-container\">\n" +
+    "<div class=\"row row-container qing-container\" >\n" +
     "    <% _.each(column,function(col){ %>\n" +
     "    <div class=\"col-md-<%= col.value %>\">\n" +
     "        <qing-panel qing-mark=\"<%= guid.newId() %>\"></qing-panel>\n" +

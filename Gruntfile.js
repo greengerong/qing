@@ -102,8 +102,10 @@ module.exports = function (grunt) {
                         return src;
                     }
                 },
-                src: ['<%= qing.app %>/product/less/main.less',
+                src: [
+                    '<%= qing.app %>/common/less/qing.less',
                     '<%= qing.app %>/common/less/variables.less',
+                    '<%= qing.app %>/product/less/main.less',
                     '<%= qing.app %>/product/less/variables.less',
                     '<%= qing.app %>/common/directives/**/*.less',
                     '<%= qing.app %>/product/directives/**/*.less'
@@ -117,8 +119,10 @@ module.exports = function (grunt) {
                         return src;
                     }
                 },
-                src: ['<%= qing.app %>/design/less/main.less',
+                src: [
+                    '<%= qing.app %>/common/less/qing.less',
                     '<%= qing.app %>/common/less/variables.less',
+                    '<%= qing.app %>/design/less/main.less',
                     '<%= qing.app %>/design/less/variables.less',
                     '<%= qing.app %>/common/directives/**/*.less',
                     '<%= qing.app %>/design/directives/**/*.less'
