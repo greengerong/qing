@@ -4,6 +4,7 @@ angular.module("qing")
     .service("pluginModalService", ["$modal", "$templateCache", "pluginsService", "$q", "underscoreService", "guid",
         function ($modal, $templateCache, pluginsService, $q, underscoreService, guid) {
             var self = this;
+
             var getDesignResult = function (pluginName, result) {
                 var data = result.tpl.data ? angular.copy(result.tpl.data) : {};
                 data.guid = guid;
@@ -19,6 +20,16 @@ angular.module("qing")
                 });
 
                 return $pluginElm;
+            };
+
+            var promiseWarp = function (pluginName, modalInstance) {
+                var defer = $q.defer();
+                modalInstance.result.then(function (result) {
+                    defer.resolve(getDesignResult(pluginName, result));
+                }, function () {
+                    defer.reject(arguments);
+                });
+                return defer.promise;
             };
 
             self.showDesignModal = function (pluginName) {
@@ -54,14 +65,8 @@ angular.module("qing")
                     }
                 });
 
-                var defer = $q.defer();
-                modalInstance.result.then(function (result) {
-                    defer.resolve(getDesignResult(pluginName, result));
-                }, function () {
-                    defer.reject(arguments);
-                });
 
-                return defer.promise;
+                return promiseWarp(pluginName, modalInstance);
             };
 
         }]);
