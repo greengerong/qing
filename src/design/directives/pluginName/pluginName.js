@@ -15,7 +15,7 @@ angular.module("qing")
                     $http.get(tplUrl, {cache: $templateCache})
                         .success(function (tplContent) {
                             var $toolBar = $compile(tplContent.trim())(scope);
-                            element.append($toolBar);
+                            element.prepend($toolBar);
                         });
 
                     element.on("mouseover",function (e) {

@@ -5918,10 +5918,7 @@ td.visible-print {
   position: relative;
 }
 .design-tool-bar {
-  position: absolute;
-  right: 10px;
-  width: 50px;
-  top: 1px;
+  position: relative;
   z-index: 1;
   height: 20px;
   background-color: #ececec;
@@ -5943,7 +5940,7 @@ td.visible-print {
   cursor: pointer;
 }
 .tool-bar-hight-light {
-  border-color: #ff0000 !important;
+  border: 1px dashed #ff0000 !important;
 }
 .qing-add {
   margin: 2px;
