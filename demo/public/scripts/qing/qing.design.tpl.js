@@ -393,7 +393,7 @@ angular.module("qing")
                                 .attr(attrs);
                             return {
                                 "plugin": plugin,
-                                "data": pluginData
+                                "pluginData": pluginData
                             }
                         }
                     }
