@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('qing')
-    .service('LocalStorage', function Cover() {
+    .service('localStorage', function Cover() {
 
         var KEY = 'qing.localStorage',
             data = JSON.parse(localStorage.getItem(KEY)) || {};

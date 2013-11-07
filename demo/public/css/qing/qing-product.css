@@ -5917,23 +5917,3 @@ td.visible-print {
   margin-bottom: 2px;
   position: relative;
 }
-.qing-panel .qing-panel-bar {
-  height: 20px;
-  background-color: #ececec;
-  cursor: move;
-  margin-bottom: 2px;
-}
-.qing-panel .qing-panel-bar h3 {
-  margin: 0;
-  font-size: 10px;
-  line-height: 20px;
-  text-align: center;
-}
-.qing-panel .qing-panel-bar .btn-group {
-  position: absolute;
-  right: 5px;
-  top: 0;
-}
-.qing-panel .qing-panel-bar a {
-  cursor: pointer;
-}

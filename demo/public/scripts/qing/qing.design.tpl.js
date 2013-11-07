@@ -71,7 +71,7 @@ angular.module("qing")
         }]);
 
 angular.module('qing')
-    .service('LocalStorage', function Cover() {
+    .service('localStorage', function Cover() {
 
         var KEY = 'qing.localStorage',
             data = JSON.parse(localStorage.getItem(KEY)) || {};
@@ -96,8 +96,8 @@ angular.module('qing')
     });
 
 angular.module('qing')
-    .service('TemplateService', ["$http", "$templateCache", "$q", "LocalStorage",
-        function ($http, $templateCache, $q, LocalStorage) {
+    .service('TemplateService', ["$http", "$templateCache", "$q", "localStorage",
+        function ($http, $templateCache, $q, localStorage) {
 
 
             this.getPanelTemplate = function (mark) {
@@ -105,7 +105,7 @@ angular.module('qing')
                 //return $http.get(tplUrl, {cache: $templateCache});
                 // mock
                 var defer = $q.defer();
-                defer.resolve(decodeURI(LocalStorage.get(mark)));
+                defer.resolve(decodeURI(localStorage.get(mark)));
                 return defer.promise;
             }
 
@@ -117,11 +117,16 @@ angular.module('qing')
                 }
                 // mock
                 var defer = $q.defer();
-                defer.resolve(LocalStorage.put(mark, encodeURI(html)));
+                defer.resolve(localStorage.put(mark, encodeURI(html)));
                 return defer.promise;
             }
 
         }]);
+
+angular.module("qing")
+    .factory("underscoreService", ["$window", function ($window) {
+        return $window._;
+    }]);
 
 String.format = function () {
     var s = arguments[0];
@@ -133,15 +138,21 @@ String.format = function () {
     return s;
 };
 angular.module("qing")
-    .directive("pluginName", [ function () {
-        return {
-            restrict: "EA",
-            link: function (scope, element, attrs) {
-                element.wrapAll("<div class='design-XXX'></div>").parent()
-                    .prepend("<div class='text-right'><a>update</a><a>delete</a></A></div>")
+    .directive("pluginName", ["$http", "$compile", "$templateCache",
+        function ($http, $compile, $templateCache) {
+            var tplUrl = "design/directives/pluginName/pluginName.html";
+            return {
+                restrict: "EA",
+                link: function (scope, element, attrs) {
+                    $http.get(tplUrl, {cache: $templateCache})
+                        .success(function (tplContent) {
+                            element.append($compile(tplContent.trim())(scope));
+                        });
+                }
             }
         }
-    }]);
+    ])
+;
 
 angular.module("qing")
     .directive("qingAdd", ["$compile", "TemplateService", "pluginModalService", "guid",
@@ -242,6 +253,7 @@ angular.module('qing')
                     $scope.columnMaskoption = { "mask": "9", "repeat": 2, "greedy": false };
 
                     $scope.getResult = function () {
+                        var viewmodel = $scope.viewmodel;
                         // should change;
                         //var elm = angular.element("<div row-container data-columns=" + angular.toJson($scope.viewmodel.column) + "></div>");
                         //return elm;
@@ -249,8 +261,8 @@ angular.module('qing')
                         // 我觉得这部分可以直接拼接字符串，否则需要在 row-container
                         // 这个元素上加上mark 才能存储内部的模板, 而且产品环境下面也可以不关心布局的生成
                         var html = '<div class="row row-container">';
-                        for (var i = 0, j = $scope.viewmodel.column.length; i < j; i++) {
-                            var value = $scope.viewmodel.column[i].value;
+                        for (var i = 0, j = viewmodel.column.length; i < j; i++) {
+                            var value = viewmodel.column[i].value;
                             html += '<div class="col-md-' + value + '">';
                             html += '<qing-panel qing-mark="' + guid.newId() + '></qing-panel>';
                             html += '</div>';
@@ -259,7 +271,7 @@ angular.module('qing')
 
                         return {
                             plugin: html,
-                            data: $scope.viewmodel
+                            data: viewmodel
                         };
                     };
 
@@ -343,13 +355,24 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/services/modal/addCont.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'design/directives/pluginName/pluginName.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/services/modal/addCont.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
     "<form>\n" +
     "    <qing-panel qing-mark=\"{{qingMark}}\"></qing-panel>\n" +
     "</form>");
+}]);
+
+angular.module("design/directives/pluginName/pluginName.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/pluginName/pluginName.html",
+    "<div class=\"design-tool-bar\" ng-show=\"true\">\n" +
+    "    <h3>panel title</h3>\n" +
+    "    <div class=\"btn-group\">\n" +
+    "        <a class=\"qing-panel-edit\" title=\"edit\"><i class=\"glyphicon glyphicon-edit\"></i></a>\n" +
+    "        <a class=\"qing-panel-delete\" title=\"remove\"><i class=\"glyphicon glyphicon-remove\"></i></a>\n" +
+    "    </div>\n" +
+    "</div>");
 }]);
 
 angular.module("design/directives/qingAdd/qingAdd.html", []).run(["$templateCache", function($templateCache) {
@@ -371,7 +394,8 @@ angular.module("design/directives/qingAdd/qingAdd.html", []).run(["$templateCach
 angular.module("design/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/qingPanel/qingPanel.html",
     "<div class=\"qing-panel\" qing-drag>\n" +
-    "    <div class=\"qing-panel-bar\" ng-show=\"true\">\n" +
+    "    <!--hover 上去会挡住太多  表现 暂时先这样放一下-->\n" +
+    "    <div class=\"design-tool-bar\" ng-show=\"true\">\n" +
     "        <h3>panel title</h3>\n" +
     "        <div class=\"btn-group\">\n" +
     "            <a class=\"qing-panel-edit\" title=\"edit\"><i class=\"glyphicon glyphicon-edit\"></i></a>\n" +

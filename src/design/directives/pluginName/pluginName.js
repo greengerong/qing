@@ -1,10 +1,16 @@
 angular.module("qing")
-    .directive("pluginName", [ function () {
-        return {
-            restrict: "EA",
-            link: function (scope, element, attrs) {
-                element.wrapAll("<div class='design-XXX'></div>").parent()
-                    .prepend("<div class='text-right'><a>update</a><a>delete</a></A></div>")
+    .directive("pluginName", ["$http", "$compile", "$templateCache",
+        function ($http, $compile, $templateCache) {
+            var tplUrl = "design/directives/pluginName/pluginName.html";
+            return {
+                restrict: "EA",
+                link: function (scope, element, attrs) {
+                    $http.get(tplUrl, {cache: $templateCache})
+                        .success(function (tplContent) {
+                            element.append($compile(tplContent.trim())(scope));
+                        });
+                }
             }
         }
-    }]);
+    ])
+;

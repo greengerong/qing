@@ -72,7 +72,7 @@ angular.module("qing")
         }]);
 
 angular.module('qing')
-    .service('LocalStorage', function Cover() {
+    .service('localStorage', function Cover() {
 
         var KEY = 'qing.localStorage',
             data = JSON.parse(localStorage.getItem(KEY)) || {};
@@ -97,8 +97,8 @@ angular.module('qing')
     });
 
 angular.module('qing')
-    .service('TemplateService', ["$http", "$templateCache", "$q", "LocalStorage",
-        function ($http, $templateCache, $q, LocalStorage) {
+    .service('TemplateService', ["$http", "$templateCache", "$q", "localStorage",
+        function ($http, $templateCache, $q, localStorage) {
 
 
             this.getPanelTemplate = function (mark) {
@@ -106,7 +106,7 @@ angular.module('qing')
                 //return $http.get(tplUrl, {cache: $templateCache});
                 // mock
                 var defer = $q.defer();
-                defer.resolve(decodeURI(LocalStorage.get(mark)));
+                defer.resolve(decodeURI(localStorage.get(mark)));
                 return defer.promise;
             }
 
@@ -118,11 +118,16 @@ angular.module('qing')
                 }
                 // mock
                 var defer = $q.defer();
-                defer.resolve(LocalStorage.put(mark, encodeURI(html)));
+                defer.resolve(localStorage.put(mark, encodeURI(html)));
                 return defer.promise;
             }
 
         }]);
+
+angular.module("qing")
+    .factory("underscoreService", ["$window", function ($window) {
+        return $window._;
+    }]);
 
 String.format = function () {
     var s = arguments[0];

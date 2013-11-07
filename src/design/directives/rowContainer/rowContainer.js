@@ -51,6 +51,7 @@ angular.module('qing')
                     $scope.columnMaskoption = { "mask": "9", "repeat": 2, "greedy": false };
 
                     $scope.getResult = function () {
+                        var viewmodel = $scope.viewmodel;
                         // should change;
                         //var elm = angular.element("<div row-container data-columns=" + angular.toJson($scope.viewmodel.column) + "></div>");
                         //return elm;
@@ -58,8 +59,8 @@ angular.module('qing')
                         // 我觉得这部分可以直接拼接字符串，否则需要在 row-container
                         // 这个元素上加上mark 才能存储内部的模板, 而且产品环境下面也可以不关心布局的生成
                         var html = '<div class="row row-container">';
-                        for (var i = 0, j = $scope.viewmodel.column.length; i < j; i++) {
-                            var value = $scope.viewmodel.column[i].value;
+                        for (var i = 0, j = viewmodel.column.length; i < j; i++) {
+                            var value = viewmodel.column[i].value;
                             html += '<div class="col-md-' + value + '">';
                             html += '<qing-panel qing-mark="' + guid.newId() + '></qing-panel>';
                             html += '</div>';
@@ -68,7 +69,7 @@ angular.module('qing')
 
                         return {
                             plugin: html,
-                            data: $scope.viewmodel
+                            data: viewmodel
                         };
                     };
 
