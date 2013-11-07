@@ -20,6 +20,7 @@ qing.qingPanelDirective = function (phase) {
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
+
                         TemplateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
                             if (tplContent && (tplContent.trim())) {
                                 element.find(".content").replaceWith($compile(tplContent.trim())(scope));
@@ -28,7 +29,7 @@ qing.qingPanelDirective = function (phase) {
 
                     }
                 };
-            }]);
+    }]);
 }
 
 angular.module("qing")
@@ -119,7 +120,6 @@ angular.module('qing')
                 defer.resolve(LocalStorage.put(mark, encodeURI(html)));
                 return defer.promise;
             }
-
 
         }]);
 
@@ -370,7 +370,14 @@ angular.module("design/directives/qingAdd/qingAdd.html", []).run(["$templateCach
 
 angular.module("design/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/qingPanel/qingPanel.html",
-    "<div class=\"qing-panel\">\n" +
+    "<div class=\"qing-panel\" qing-drag>\n" +
+    "    <div class=\"qing-panel-bar\" ng-show=\"true\">\n" +
+    "        <h3>panel title</h3>\n" +
+    "        <div class=\"btn-group\">\n" +
+    "            <a class=\"qing-panel-edit\" title=\"edit\"><i class=\"glyphicon glyphicon-edit\"></i></a>\n" +
+    "            <a class=\"qing-panel-delete\" title=\"remove\"><i class=\"glyphicon glyphicon-remove\"></i></a>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "    <div class=\"content\"></div>\n" +
     "    <qing-add></qing-add>\n" +
     "</div>");

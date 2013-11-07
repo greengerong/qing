@@ -26,5 +26,4 @@ angular.module('qing')
                 return defer.promise;
             }
 
-
         }]);
