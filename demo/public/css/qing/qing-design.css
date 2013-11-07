@@ -5918,8 +5918,11 @@ td.visible-print {
   position: relative;
 }
 .design-tool-bar {
-  position: relative;
-  z-index: 1px;
+  position: absolute;
+  right: 10px;
+  width: 50px;
+  top: 1px;
+  z-index: 1;
   height: 20px;
   background-color: #ececec;
   cursor: move;
@@ -5938,6 +5941,9 @@ td.visible-print {
 }
 .design-tool-bar a {
   cursor: pointer;
+}
+.tool-bar-hight-light {
+  border-color: #ff0000 !important;
 }
 .qing-add {
   margin: 2px;

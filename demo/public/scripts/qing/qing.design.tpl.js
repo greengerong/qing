@@ -149,17 +149,21 @@ angular.module("qing")
                 link: function (scope, element, attrs) {
                     $http.get(tplUrl, {cache: $templateCache})
                         .success(function (tplContent) {
-                            element.append($compile(tplContent.trim())(scope));
+                            var $toolBar = $compile(tplContent.trim())(scope);
+                            element.append($toolBar);
                         });
+
                     element.on("mouseover",function (e) {
                         $timeout(function () {
                             scope.showDesignToolBar = true;
                         });
+                        element.addClass("tool-bar-hight-light");
                         e.stopPropagation();
                     }).on("mouseout", function (e) {
                             $timeout(function () {
                                 scope.showDesignToolBar = false;
                             });
+                            element.removeClass("tool-bar-hight-light");
                             e.stopPropagation();
                         });
                 }
@@ -408,7 +412,7 @@ angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$
 angular.module("design/directives/pluginName/pluginName.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/pluginName/pluginName.html",
     "<div class=\"design-tool-bar\" ng-show=\"showDesignToolBar\">\n" +
-    "    <h3>panel title</h3>\n" +
+    "    <!--<h3>panel title</h3>-->\n" +
     "    <div class=\"btn-group\">\n" +
     "        <a class=\"qing-panel-edit\" title=\"edit\"><i class=\"glyphicon glyphicon-edit\"></i></a>\n" +
     "        <a class=\"qing-panel-delete\" title=\"remove\"><i class=\"glyphicon glyphicon-remove\"></i></a>\n" +
