@@ -58,7 +58,9 @@ angular.module("qing")
                         }],
                     resolve: {
                         "pluginDesigner": function () {
-                            var attrs = {};
+                            var attrs = {
+                                "plugin-data": angular.toJson(pluginData)
+                            };
                             attrs[pluginName] = "";
                             var plugin = angular.element("<div></div>")
                                 .attr(attrs);
