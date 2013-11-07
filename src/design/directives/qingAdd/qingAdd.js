@@ -1,51 +1,47 @@
 'use strict';
 
-angular.module('qing')
-    .directive('qingAdd', ['$compile',"TemplateService",function ($compile,TemplateService) {
-        return {
-            templateUrl: 'design/directives/qingAdd/qingAdd.html',
-            restrict: 'EA',
-            link: function(scope, element, attrs) {
-                scope.callBack = function(result){
-                    console.log(scope.qingMark);
-                    angular.element($compile(result)(scope)).insertBefore(element);
-                    //TODO:保存原来的值
-                    TemplateService.savePanelTemplate(scope.qingMark,result);
-                };
-            },
-            controller: ["$scope", "$modal", function ($scope, $modal) {
-                $scope.addOpen = false;
-                $scope.toggleOpen = function () {
-                    $scope.addOpen = !$scope.addOpen;
-                };
-                $scope.addCont = function () {
-                    $scope.addOpen = false;
-                };
+angular.module("qing")
+    .directive("qingAdd", ["$compile", "TemplateService", "pluginModalService", "guid",
+        function ($compile, TemplateService, pluginModalService, guid) {
+            return {
+                templateUrl: "design/directives/qingAdd/qingAdd.html",
+                restrict: "EA",
+                link: function (scope, element, attrs) {
+                    scope.designeCallBack = function (pluginName, result) {
+                        var html = result.plugin;
+                        var $pluginElm = angular.element(html);
+                        $pluginElm.attr({
+                            "qing-mask": guid.newId(),
+                            "plugin-data": angular.toJson(result.data),
+                            "plugin-name": pluginName
+                        });
+                        angular.element($compile($pluginElm)(scope)).insertBefore(element);
 
-                $scope.addContModal = function (pluginName) {
+                        TemplateService.savePanelTemplate(scope.qingMark, html);
+                    };
+                },
+                controller: ["$scope", function ($scope) {
                     $scope.addOpen = false;
-                    var modalInstance = $modal.open({
-                        templateUrl: 'views/modal/addCont.html',
-                        controller: 'AddContModalCtrl',
-                        resolve : {
-                            "plugin" : function(){
-                                var attrs = {};
-                                attrs[pluginName] = "";
-                                var plugin =angular.element("<div></div>")
-                                .attr(attrs);
-                                return plugin;
-                            }
-                        }
-                    });
-                    modalInstance.result.then(function (result) {
-                        //TODO: just for quickly test;
-                        $scope.callBack(result);
-                        // $scope.addCont(column);
-                        console.log("plugin result",result);
-                    }, function () {
-                    });
-                };
-            }]
 
-        };
-    }]);
+                    $scope.toggleOpen = function () {
+                        $scope.addOpen = !$scope.addOpen;
+                    };
+
+                    $scope.addCont = function () {
+                        $scope.addOpen = false;
+                    };
+
+                    $scope.addContModal = function (pluginName) {
+                        $scope.addOpen = false;
+                        pluginModalService.showDesignModal(pluginName)
+                            .result.then(function (result) {
+                                //OK
+                                $scope.designeCallBack(pluginName, result);
+                            }, function () {
+                                //Cancel
+                            });
+                    };
+                }]
+
+            };
+        }]);

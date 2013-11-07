@@ -1,5 +1,6 @@
-/*! qing - v0.0.0 - 2013-11-06 */
-angular.module('qing', ["qing.template", 'ui.bootstrap', 'ngmodel.format', 'green.inputmask4angular'])
+/*! qing - v0.0.0 - 2013-11-07 */
+//TODO: should can be add by each design directive; Maybe use window Array
+angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular"])
     .constant('panelConfig', {
         "url": "scripts/directives/qingPanel/qingPanel.html?mark={0}"
     });
@@ -140,7 +141,7 @@ angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
     "<form>\n" +
-    "    <qing-panel qing-mark=\"{{qingMark}}\" current-form=\"currentForm\"></qing-panel>\n" +
+    "    <qing-panel qing-mark=\"{{qingMark}}\"></qing-panel>\n" +
     "</form>");
 }]);
 
