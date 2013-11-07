@@ -138,21 +138,34 @@ String.format = function () {
     return s;
 };
 angular.module("qing")
-    .directive("pluginName", ["$http", "$compile", "$templateCache",
-        function ($http, $compile, $templateCache) {
+    .directive("pluginName", ["$http", "$compile", "$templateCache", "$timeout",
+        function ($http, $compile, $templateCache, $timeout) {
             var tplUrl = "design/directives/pluginName/pluginName.html";
             return {
                 restrict: "EA",
+                scope: {
+
+                },
                 link: function (scope, element, attrs) {
                     $http.get(tplUrl, {cache: $templateCache})
                         .success(function (tplContent) {
                             element.append($compile(tplContent.trim())(scope));
                         });
+                    element.on("mouseover",function (e) {
+                        $timeout(function () {
+                            scope.showDesignToolBar = true;
+                        });
+                        e.stopPropagation();
+                    }).on("mouseout", function (e) {
+                            $timeout(function () {
+                                scope.showDesignToolBar = false;
+                            });
+                            e.stopPropagation();
+                        });
                 }
             }
         }
-    ])
-;
+    ]);
 
 angular.module("qing")
     .directive("qingAdd", ["$compile", "templateService", "pluginModalService", "guid",
@@ -394,7 +407,7 @@ angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$
 
 angular.module("design/directives/pluginName/pluginName.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/pluginName/pluginName.html",
-    "<div class=\"design-tool-bar\" ng-show=\"true\">\n" +
+    "<div class=\"design-tool-bar\" ng-show=\"showDesignToolBar\">\n" +
     "    <h3>panel title</h3>\n" +
     "    <div class=\"btn-group\">\n" +
     "        <a class=\"qing-panel-edit\" title=\"edit\"><i class=\"glyphicon glyphicon-edit\"></i></a>\n" +
@@ -421,15 +434,15 @@ angular.module("design/directives/qingAdd/qingAdd.html", []).run(["$templateCach
 
 angular.module("design/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/qingPanel/qingPanel.html",
-    "<div class=\"qing-panel\" qing-drag>\n" +
+    "<div class=\"qing-panel\" qing-drag plugin-name=\"qing-panel\">\n" +
     "    <!--hover 上去会挡住太多  表现 暂时先这样放一下-->\n" +
-    "    <div class=\"design-tool-bar\" ng-show=\"true\">\n" +
-    "        <h3>panel title</h3>\n" +
-    "        <div class=\"btn-group\">\n" +
-    "            <a class=\"qing-panel-edit\" title=\"edit\"><i class=\"glyphicon glyphicon-edit\"></i></a>\n" +
-    "            <a class=\"qing-panel-delete\" title=\"remove\"><i class=\"glyphicon glyphicon-remove\"></i></a>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
+    "    <!--<div class=\"design-tool-bar\" ng-show=\"true\">-->\n" +
+    "        <!--<h3>panel title</h3>-->\n" +
+    "        <!--<div class=\"btn-group\">-->\n" +
+    "            <!--<a class=\"qing-panel-edit\" title=\"edit\"><i class=\"glyphicon glyphicon-edit\"></i></a>-->\n" +
+    "            <!--<a class=\"qing-panel-delete\" title=\"remove\"><i class=\"glyphicon glyphicon-remove\"></i></a>-->\n" +
+    "        <!--</div>-->\n" +
+    "    <!--</div>-->\n" +
     "    <div class=\"content\"></div>\n" +
     "    <qing-add></qing-add>\n" +
     "</div>");

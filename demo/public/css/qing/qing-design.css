@@ -5918,6 +5918,8 @@ td.visible-print {
   position: relative;
 }
 .design-tool-bar {
+  position: relative;
+  z-index: 1px;
   height: 20px;
   background-color: #ececec;
   cursor: move;
