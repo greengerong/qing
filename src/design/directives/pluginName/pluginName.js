@@ -1,7 +1,9 @@
 angular.module("qing")
     .directive("pluginName", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService", "templateService",
         function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService) {
-            var tplUrl = "design/directives/pluginName/pluginName.html";
+            var tplUrl = "design/directives/pluginName/pluginName.html",
+                toolBarHightLightClass = "tool-bar-hight-light";
+
             return {
                 restrict: "EA",
                 scope: {
@@ -20,13 +22,13 @@ angular.module("qing")
                         $timeout(function () {
                             scope.showDesignToolBar = true;
                         });
-                        element.addClass("tool-bar-hight-light");
+                        element.addClass(toolBarHightLightClass);
                         e.stopPropagation();
                     }).on("mouseout", function (e) {
                             $timeout(function () {
                                 scope.showDesignToolBar = false;
                             });
-                            element.removeClass("tool-bar-hight-light");
+                            element.removeClass(toolBarHightLightClass);
                             e.stopPropagation();
                         });
 
