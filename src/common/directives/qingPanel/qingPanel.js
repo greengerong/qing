@@ -4,8 +4,8 @@ var qing = qing || {};
 
 qing.qingPanelDirective = function (phase) {
     angular.module("qing")
-        .directive('qingPanel', ["$compile", "TemplateService",
-            function ($compile, TemplateService) {
+        .directive('qingPanel', ["$compile", "templateService",
+            function ($compile, templateService) {
                 return {
                     templateUrl: String.format("{0}/directives/qingPanel/qingPanel.html", phase),
                     restrict: "EA",
@@ -16,7 +16,7 @@ qing.qingPanelDirective = function (phase) {
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
 
-                        TemplateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
+                        templateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
                             if (tplContent && (tplContent.trim())) {
                                 element.find(".content").replaceWith($compile(tplContent.trim())(scope));
                             }

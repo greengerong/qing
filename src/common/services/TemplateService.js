@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('qing')
-    .service('TemplateService', ["$http", "$templateCache", "$q", "localStorage",
+    .service('templateService', ["$http", "$templateCache", "$q", "localStorage",
         function ($http, $templateCache, $q, localStorage) {
 
 
