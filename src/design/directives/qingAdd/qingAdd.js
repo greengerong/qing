@@ -10,7 +10,7 @@ angular.module("qing")
                     scope.designeCallBack = function (pluginName, result) {
                         angular.element($compile(result)(scope)).insertBefore(element);
 
-                        templateService.savePanelTemplate(scope.qingMark, html);
+                        templateService.savePanelTemplate(scope.qingMark, result);
                     };
                 },
                 controller: ["$scope", function ($scope) {
