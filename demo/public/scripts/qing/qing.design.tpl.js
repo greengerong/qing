@@ -379,9 +379,9 @@ angular.module("qing")
                                 $modalInstance.close(result);
                             };
 
-                            $scope.close = function () {
+                            $scope.cancel = function () {
                                 pluginScope.$destroy();
-                                $modalInstance.close();
+                                $modalInstance.dismiss('cancel');
                             };
 
                         }],
@@ -516,7 +516,7 @@ angular.module("design/directives/rowContainer/rowContainerResult.html", []).run
 angular.module("design/services/modal/addCont.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/services/modal/addCont.html",
     "<div class=\"modal-header\">\n" +
-    "    <button type=\"button\" class=\"close\" ng-click=\"close()\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n" +
+    "    <button type=\"button\" class=\"close\" ng-click=\"cancel()\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n" +
     "    <h4 class=\"modal-title\" ng-bind=\"options.title\"></h4>\n" +
     "\n" +
     "    <p ng-bind=\"options.description\" ng-show=\"options.description\"></p>\n" +
@@ -527,8 +527,9 @@ angular.module("design/services/modal/addCont.html", []).run(["$templateCache", 
     "    </div>\n" +
     "    <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ok()\"\n" +
-    "                ng-disabled=\"designForm.$invalid\">OK\n" +
+    "                ng-disabled=\"designForm.$invalid\">&nbsp;OK&nbsp;\n" +
     "        </button>\n" +
+    "        <!--<button type=\"button\" class=\"btn btn-warning\" ng-click=\"cancel()\">Cancel</button>-->\n" +
     "    </div>\n" +
     "</div>");
 }]);

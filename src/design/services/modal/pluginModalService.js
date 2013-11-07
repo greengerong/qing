@@ -50,9 +50,9 @@ angular.module("qing")
                                 $modalInstance.close(result);
                             };
 
-                            $scope.close = function () {
+                            $scope.cancel = function () {
                                 pluginScope.$destroy();
-                                $modalInstance.close();
+                                $modalInstance.dismiss('cancel');
                             };
 
                         }],
