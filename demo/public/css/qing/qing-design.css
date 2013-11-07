@@ -5936,7 +5936,7 @@ td.visible-print {
   cursor: pointer;
 }
 .tool-bar-hight-light {
-  border-color: #ff0000 !important;
+  border: 1px dashed #ff0000 !important;
 }
 .qing-add {
   margin: 2px;
