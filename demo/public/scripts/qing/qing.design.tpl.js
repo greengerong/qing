@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-07 */
+/*! qing - v0.0.0 - 2013-11-08 */
 angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular"])
     .constant("gridConfig", {
         "totalColumn": 12
@@ -138,15 +138,17 @@ String.format = function () {
     return s;
 };
 angular.module("qing")
-    .directive("pluginName", ["$http", "$compile", "$templateCache", "$timeout",
-        function ($http, $compile, $templateCache, $timeout) {
+    .directive("pluginName", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService", "templateService",
+        function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService) {
             var tplUrl = "design/directives/pluginName/pluginName.html";
             return {
                 restrict: "EA",
                 scope: {
-
                 },
                 link: function (scope, element, attrs) {
+                    scope.pluginName = attrs.pluginName
+                    scope.pluginData = scope.$eval(attrs.pluginData);
+
                     $http.get(tplUrl, {cache: $templateCache})
                         .success(function (tplContent) {
                             var $toolBar = $compile(tplContent.trim())(scope);
@@ -166,7 +168,23 @@ angular.module("qing")
                             element.removeClass("tool-bar-hight-light");
                             e.stopPropagation();
                         });
-                }
+
+                    scope.designeCallBack = function (pluginName, result) {
+                        element.replaceWith(angular.element($compile(result)(scope)));
+                        templateService.savePanelTemplate(attrs.qingMark, result);
+                    };
+                },
+                controller: ["$scope", function ($scope) {
+                    $scope.edit = function () {
+                        pluginModalService.showDesignModal($scope.pluginName, $scope.pluginData)
+                            .then(function (result) {
+                                //OK
+                                $scope.designeCallBack($scope.pluginName, result);
+                            }, function () {
+                                //Cancel
+                            });
+                    };
+                }]
             }
         }
     ]);
@@ -180,7 +198,6 @@ angular.module("qing")
                 link: function (scope, element, attrs) {
                     scope.designeCallBack = function (pluginName, result) {
                         angular.element($compile(result)(scope)).insertBefore(element);
-
                         templateService.savePanelTemplate(scope.qingMark, result);
                     };
                 },
@@ -288,7 +305,10 @@ angular.module('qing')
                                     column: viewmodel.column
                                 }
                             },
-                            data: viewmodel
+                            data: {
+                                "key": "viewmodel",
+                                "data": viewmodel
+                            }
                         };
                     };
 
@@ -339,14 +359,16 @@ angular.module("qing")
                 return defer.promise;
             };
 
-            self.showDesignModal = function (pluginName) {
+            self.showDesignModal = function (pluginName, pluginData) {
                 var modalInstance = $modal.open({
                     templateUrl: "design/services/modal/addCont.html",
                     controller: [ "$scope", "$modalInstance" , "pluginDesigner", "$compile",
                         function ($scope, $modalInstance, pluginDesigner, $compile) {
                             var pluginScope = $scope.$new();
-
-                            $scope.contentHtml = $compile(pluginDesigner)(pluginScope);
+                            if (pluginDesigner.pluginData) {
+                                pluginScope[pluginDesigner.pluginData.key] = pluginDesigner.pluginData.data;
+                            }
+                            $scope.contentHtml = $compile(pluginDesigner.plugin)(pluginScope);
                             $scope.options = pluginsService.getPlugin(pluginName);
                             $scope.ok = function () {
                                 var result = pluginScope.getResult && angular.isFunction(pluginScope.getResult)
@@ -367,7 +389,10 @@ angular.module("qing")
                             attrs[pluginName] = "";
                             var plugin = angular.element("<div></div>")
                                 .attr(attrs);
-                            return plugin;
+                            return {
+                                "plugin": plugin,
+                                "data": pluginData
+                            }
                         }
                     }
                 });
@@ -420,8 +445,8 @@ angular.module("design/directives/pluginName/pluginName.html", []).run(["$templa
     "<div class=\"design-tool-bar\" ng-show=\"showDesignToolBar\">\n" +
     "    <!--<h3>panel title</h3>-->\n" +
     "    <div class=\"btn-group\">\n" +
-    "        <a class=\"qing-panel-edit\" title=\"edit\"><i class=\"glyphicon glyphicon-edit\"></i></a>\n" +
-    "        <a class=\"qing-panel-delete\" title=\"remove\"><i class=\"glyphicon glyphicon-remove\"></i></a>\n" +
+    "        <a class=\"qing-panel-edit\" title=\"edit\" ng-click=\"edit();\"><i class=\"glyphicon glyphicon-edit\"></i></a>\n" +
+    "        <a class=\"qing-panel-delete\" title=\"remove\" ng-click=\"remove();\"><i class=\"glyphicon glyphicon-remove\"></i></a>\n" +
     "    </div>\n" +
     "</div>");
 }]);
@@ -444,15 +469,8 @@ angular.module("design/directives/qingAdd/qingAdd.html", []).run(["$templateCach
 
 angular.module("design/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/qingPanel/qingPanel.html",
-    "<div class=\"qing-panel\" qing-drag plugin-name=\"qing-panel\">\n" +
-    "    <!--hover 上去会挡住太多  表现 暂时先这样放一下-->\n" +
-    "    <!--<div class=\"design-tool-bar\" ng-show=\"true\">-->\n" +
-    "        <!--<h3>panel title</h3>-->\n" +
-    "        <!--<div class=\"btn-group\">-->\n" +
-    "            <!--<a class=\"qing-panel-edit\" title=\"edit\"><i class=\"glyphicon glyphicon-edit\"></i></a>-->\n" +
-    "            <!--<a class=\"qing-panel-delete\" title=\"remove\"><i class=\"glyphicon glyphicon-remove\"></i></a>-->\n" +
-    "        <!--</div>-->\n" +
-    "    <!--</div>-->\n" +
+    "<div class=\"qing-panel\" qing-drag >\n" +
+    "    <!--plugin-name=\"qing-panel\" 暂时注释 是否可用有待商榷-->\n" +
     "    <div class=\"content\"></div>\n" +
     "    <qing-add></qing-add>\n" +
     "</div>");

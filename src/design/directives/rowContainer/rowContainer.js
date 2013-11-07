@@ -76,7 +76,10 @@ angular.module('qing')
                                     column: viewmodel.column
                                 }
                             },
-                            data: viewmodel
+                            data: {
+                                "key": "viewmodel",
+                                "data": viewmodel
+                            }
                         };
                     };
 

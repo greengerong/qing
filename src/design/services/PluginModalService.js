@@ -32,14 +32,16 @@ angular.module("qing")
                 return defer.promise;
             };
 
-            self.showDesignModal = function (pluginName) {
+            self.showDesignModal = function (pluginName, pluginData) {
                 var modalInstance = $modal.open({
                     templateUrl: "design/services/modal/addCont.html",
                     controller: [ "$scope", "$modalInstance" , "pluginDesigner", "$compile",
                         function ($scope, $modalInstance, pluginDesigner, $compile) {
                             var pluginScope = $scope.$new();
-
-                            $scope.contentHtml = $compile(pluginDesigner)(pluginScope);
+                            if (pluginDesigner.pluginData) {
+                                pluginScope[pluginDesigner.pluginData.key] = pluginDesigner.pluginData.data;
+                            }
+                            $scope.contentHtml = $compile(pluginDesigner.plugin)(pluginScope);
                             $scope.options = pluginsService.getPlugin(pluginName);
                             $scope.ok = function () {
                                 var result = pluginScope.getResult && angular.isFunction(pluginScope.getResult)
@@ -60,7 +62,10 @@ angular.module("qing")
                             attrs[pluginName] = "";
                             var plugin = angular.element("<div></div>")
                                 .attr(attrs);
-                            return plugin;
+                            return {
+                                "plugin": plugin,
+                                "data": pluginData
+                            }
                         }
                     }
                 });
