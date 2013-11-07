@@ -217,7 +217,8 @@ angular.module('qing')
         function ($compile, gridConfig, guid, pluginsService) {
             pluginsService.register("row-container", {
                 "title": "row container",
-                "description": ""
+                "description": "",
+                "type": "container"//(just container/control)
             });
 
             return {
@@ -380,8 +381,9 @@ angular.module("qing")
 angular.module("qing").constant("pluginsConfig", {})
     .service("pluginsService", ["pluginsConfig", "$log",
         function (pluginsConfig, $log) {
+            var self = this;
 
-            this.register = function (name, options) {
+            self.register = function (name, options) {
                 if (pluginsConfig.hasOwnProperty(name)) {
                     $log.error(String.format("Plugin {0} already register!", name));
                     return;
@@ -389,13 +391,17 @@ angular.module("qing").constant("pluginsConfig", {})
                 pluginsConfig[name] = options;
             };
 
-            this.getPlugin = function (name) {
+            self.getPlugin = function (name) {
                 if (!pluginsConfig.hasOwnProperty(name)) {
                     $log.error(String.format("Plugin {0} does not register!", name));
                     return;
                 }
 
                 return pluginsConfig[name];
+            };
+
+            self.getAllPlugins = function () {
+                return  pluginsConfig || {};
             };
 
         }]);

@@ -5,7 +5,8 @@ angular.module('qing')
         function ($compile, gridConfig, guid, pluginsService) {
             pluginsService.register("row-container", {
                 "title": "row container",
-                "description": ""
+                "description": "",
+                "type": "container"//(just container/control)
             });
 
             return {
