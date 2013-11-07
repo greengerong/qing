@@ -1,10 +1,27 @@
 'use strict';
 
 angular.module("qing")
-    .service("pluginModalService", ["$modal", "pluginsService",
-        function ($modal, pluginsService) {
+    .service("pluginModalService", ["$modal", "$templateCache", "pluginsService", "$q", "underscoreService", "guid",
+        function ($modal, $templateCache, pluginsService, $q, underscoreService, guid) {
+            var self = this;
+            var getDesignResult = function (pluginName, result) {
+                var data = result.tpl.data ? angular.copy(result.tpl.data) : {};
+                data.guid = guid;
 
-            this.showDesignModal = function (pluginName) {
+                var html = result.tpl.url ?
+                    underscoreService.template($templateCache.get(result.tpl.url), data)
+                    : result.html;
+                var $pluginElm = angular.element(html);
+                $pluginElm.attr({
+                    "qing-mask": guid.newId(),
+                    "plugin-data": angular.toJson(result.data),
+                    "plugin-name": pluginName
+                });
+
+                return $pluginElm;
+            };
+
+            self.showDesignModal = function (pluginName) {
                 var modalInstance = $modal.open({
                     templateUrl: "design/services/modal/addCont.html",
                     controller: [ "$scope", "$modalInstance" , "pluginDesigner", "$compile",
@@ -37,7 +54,14 @@ angular.module("qing")
                     }
                 });
 
-                return modalInstance;
+                var defer = $q.defer();
+                modalInstance.result.then(function (result) {
+                    defer.resolve(getDesignResult(pluginName, result));
+                }, function () {
+                    defer.reject(arguments);
+                });
+
+                return defer.promise;
             };
 
         }]);

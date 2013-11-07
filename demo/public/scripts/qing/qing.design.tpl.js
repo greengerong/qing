@@ -155,23 +155,16 @@ angular.module("qing")
 ;
 
 angular.module("qing")
-    .directive("qingAdd", ["$compile", "TemplateService", "pluginModalService", "guid",
-        function ($compile, TemplateService, pluginModalService, guid) {
+    .directive("qingAdd", ["$compile", "templateService", "pluginModalService", "guid",
+        function ($compile, templateService, pluginModalService, guid) {
             return {
                 templateUrl: "design/directives/qingAdd/qingAdd.html",
                 restrict: "EA",
                 link: function (scope, element, attrs) {
                     scope.designeCallBack = function (pluginName, result) {
-                        var html = result.plugin;
-                        var $pluginElm = angular.element(html);
-                        $pluginElm.attr({
-                            "qing-mask": guid.newId(),
-                            "plugin-data": angular.toJson(result.data),
-                            "plugin-name": pluginName
-                        });
-                        angular.element($compile($pluginElm)(scope)).insertBefore(element);
+                        angular.element($compile(result)(scope)).insertBefore(element);
 
-                        TemplateService.savePanelTemplate(scope.qingMark, html);
+                        templateService.savePanelTemplate(scope.qingMark, html);
                     };
                 },
                 controller: ["$scope", function ($scope) {
@@ -188,7 +181,7 @@ angular.module("qing")
                     $scope.addContModal = function (pluginName) {
                         $scope.addOpen = false;
                         pluginModalService.showDesignModal(pluginName)
-                            .result.then(function (result) {
+                            .then(function (result) {
                                 //OK
                                 $scope.designeCallBack(pluginName, result);
                             }, function () {
@@ -260,17 +253,23 @@ angular.module('qing')
 
                         // 我觉得这部分可以直接拼接字符串，否则需要在 row-container
                         // 这个元素上加上mark 才能存储内部的模板, 而且产品环境下面也可以不关心布局的生成
-                        var html = '<div class="row row-container">';
-                        for (var i = 0, j = viewmodel.column.length; i < j; i++) {
-                            var value = viewmodel.column[i].value;
-                            html += '<div class="col-md-' + value + '">';
-                            html += '<qing-panel qing-mark="' + guid.newId() + '></qing-panel>';
-                            html += '</div>';
-                        }
-                        html += '</div>';
+//                        var html = '<div class="row row-container">';
+//                        for (var i = 0, j = viewmodel.column.length; i < j; i++) {
+//                            var value = viewmodel.column[i].value;
+//                            html += '<div class="col-md-' + value + '">';
+//                            html += '<qing-panel qing-mark="' + guid.newId() + '></qing-panel>';
+//                            html += '</div>';
+//                        }
+//                        html += '</div>';
 
                         return {
-                            plugin: html,
+                            tpl: {
+                                url: "design/directives/rowContainer/rowContainerResult.html",
+                                html: "",
+                                data: {
+                                    column: viewmodel.column
+                                }
+                            },
                             data: viewmodel
                         };
                     };
@@ -291,10 +290,27 @@ angular.module("qing")
         }]);
 
 angular.module("qing")
-    .service("pluginModalService", ["$modal", "pluginsService",
-        function ($modal, pluginsService) {
+    .service("pluginModalService", ["$modal", "$templateCache", "pluginsService", "$q", "underscoreService", "guid",
+        function ($modal, $templateCache, pluginsService, $q, underscoreService, guid) {
+            var self = this;
+            var getDesignResult = function (pluginName, result) {
+                var data = result.tpl.data ? angular.copy(result.tpl.data) : {};
+                data.guid = guid;
 
-            this.showDesignModal = function (pluginName) {
+                var html = result.tpl.url ?
+                    underscoreService.template($templateCache.get(result.tpl.url), data)
+                    : result.html;
+                var $pluginElm = angular.element(html);
+                $pluginElm.attr({
+                    "qing-mask": guid.newId(),
+                    "plugin-data": angular.toJson(result.data),
+                    "plugin-name": pluginName
+                });
+
+                return $pluginElm;
+            };
+
+            self.showDesignModal = function (pluginName) {
                 var modalInstance = $modal.open({
                     templateUrl: "design/services/modal/addCont.html",
                     controller: [ "$scope", "$modalInstance" , "pluginDesigner", "$compile",
@@ -327,7 +343,14 @@ angular.module("qing")
                     }
                 });
 
-                return modalInstance;
+                var defer = $q.defer();
+                modalInstance.result.then(function (result) {
+                    defer.resolve(getDesignResult(pluginName, result));
+                }, function () {
+                    defer.reject(arguments);
+                });
+
+                return defer.promise;
             };
 
         }]);
@@ -355,7 +378,7 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'design/directives/pluginName/pluginName.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/services/modal/addCont.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'design/directives/pluginName/pluginName.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/services/modal/addCont.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
@@ -427,6 +450,17 @@ angular.module("design/directives/rowContainer/rowContainer.html", []).run(["$te
     "        </span>\n" +
     "        =<span ng-bind=\"viewmodel.totalColumn\"></span>\n" +
     "    </div>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/rowContainer/rowContainerResult.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/rowContainer/rowContainerResult.html",
+    "<div class=\"row row-container\">\n" +
+    "    <% _.each(column,function(col){ %>\n" +
+    "    <div class=\"col-md-<%= col.value %>\">\n" +
+    "        <qing-panel qing-mark=\"<%= guid.newId() %>\"></qing-panel>\n" +
+    "    </div>\n" +
+    "    <% });%>\n" +
     "</div>");
 }]);
 

@@ -58,17 +58,23 @@ angular.module('qing')
 
                         // 我觉得这部分可以直接拼接字符串，否则需要在 row-container
                         // 这个元素上加上mark 才能存储内部的模板, 而且产品环境下面也可以不关心布局的生成
-                        var html = '<div class="row row-container">';
-                        for (var i = 0, j = viewmodel.column.length; i < j; i++) {
-                            var value = viewmodel.column[i].value;
-                            html += '<div class="col-md-' + value + '">';
-                            html += '<qing-panel qing-mark="' + guid.newId() + '></qing-panel>';
-                            html += '</div>';
-                        }
-                        html += '</div>';
+//                        var html = '<div class="row row-container">';
+//                        for (var i = 0, j = viewmodel.column.length; i < j; i++) {
+//                            var value = viewmodel.column[i].value;
+//                            html += '<div class="col-md-' + value + '">';
+//                            html += '<qing-panel qing-mark="' + guid.newId() + '></qing-panel>';
+//                            html += '</div>';
+//                        }
+//                        html += '</div>';
 
                         return {
-                            plugin: html,
+                            tpl: {
+                                url: "design/directives/rowContainer/rowContainerResult.html",
+                                html: "",
+                                data: {
+                                    column: viewmodel.column
+                                }
+                            },
                             data: viewmodel
                         };
                     };
