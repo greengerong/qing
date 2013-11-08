@@ -1,15 +1,19 @@
 'use strict';
 
 angular.module("qing")
-    .directive("qingAdd", ["$compile", "templateService", "pluginModalService", "guid",
-        function ($compile, templateService, pluginModalService, guid) {
+    .directive("qingAdd", ["$compile", "templateService", "pluginModalService",
+        function ($compile, templateService, pluginModalService) {
             return {
                 templateUrl: "design/directives/qingAdd/qingAdd.html",
                 restrict: "EA",
+                scope: {
+                    "qingMark": "="
+                },
                 link: function (scope, element, attrs) {
-                    scope.designeCallBack = function (pluginName, result) {
-                        angular.element($compile(result)(scope)).insertBefore(element);
-                        templateService.savePanelTemplate(scope.qingMark, result);
+                    scope.designCallBack = function (pluginName, html) {
+                        html = angular.isObject(html) ? html[0].outerHTML : html;
+                        $compile(html)(scope).insertBefore(element);
+                        templateService.savePanelTemplate(scope.qingMark, html);
                     };
                 },
                 controller: ["$scope", function ($scope) {
@@ -28,7 +32,7 @@ angular.module("qing")
                         pluginModalService.showDesignModal(pluginName)
                             .then(function (result) {
                                 //OK
-                                $scope.designeCallBack(pluginName, result);
+                                $scope.designCallBack(pluginName, result);
                             }, function () {
                                 //Cancel
                             });

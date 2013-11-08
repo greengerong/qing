@@ -71,53 +71,62 @@ angular.module("qing")
         }]);
 
 angular.module('qing')
-    .service('localStorage', function Cover() {
+    .service('localStorage', ["$window", "$log", function ($window, $log) {
 
         var KEY = 'qing.localStorage',
-            data = JSON.parse(localStorage.getItem(KEY)) || {};
+            self = this;
 
-        var storage = function () {
-            localStorage.setItem(KEY, JSON.stringify(data));
-        }
-
-        this.put = function (id, text) {
-            data[id] = text;
-            storage();
+        var getData = function () {
+            return angular.fromJson($window.localStorage.getItem(KEY)) || {};
         };
 
-        this.get = function (id) {
-            if (data[id]) {
-                return data[id];
-            } else {
-                return null;
-            }
-        }
+        var saveData = function (data) {
+            $window.localStorage.setItem(KEY, angular.toJson(data));
+        };
 
-    });
+        self.put = function (id, text) {
+            var data = getData();
+            data[id] = text;
+            $log.info(String.format("localStorage save data for mark {0}. ", id), data);
+            saveData(data);
+        };
+
+        self.get = function (id) {
+            var data = getData();
+            $log.info(String.format("localStorage get data for mark {0}.", id), data);
+            return data[id] ? data[id] : null;
+        };
+    }]);
 
 angular.module('qing')
     .service('templateService', ["$http", "$templateCache", "$q", "localStorage",
         function ($http, $templateCache, $q, localStorage) {
+            var self = this;
 
-
-            this.getPanelTemplate = function (mark) {
+            self.getPanelTemplate = function (mark) {
                 // var tplUrl = String.format(panelConfig.url, mark);
                 //return $http.get(tplUrl, {cache: $templateCache});
                 // mock
                 var defer = $q.defer();
-                defer.resolve(decodeURI(localStorage.get(mark)));
+                var data = localStorage.get(mark);
+                var result = data ? decodeURI(data) : null;
+                defer.resolve(result);
                 return defer.promise;
             }
 
-            this.savePanelTemplate = function (mark, html) {
-
-                //TODO: maybe object
-                if (angular.isObject(html) && html.jquery) {
-                    html = html[0].outerHTML;
-                }
-                // mock
+            self.savePanelTemplate = function (mark, html) {
                 var defer = $q.defer();
-                defer.resolve(localStorage.put(mark, encodeURI(html)));
+                self.getPanelTemplate(mark).then(function (container) {
+                    if (!container) {
+                        container = "<div></div>";
+                    }
+
+                    var $elm = angular.element(container).append(angular.element(html));
+                    defer.resolve(localStorage.put(mark, encodeURI($elm[0].outerHTML)));
+                }, function () {
+                    defer.reject(arguments);
+                });
+
                 return defer.promise;
             }
 
@@ -138,9 +147,9 @@ String.format = function () {
     return s;
 };
 angular.module("qing")
-    .directive("pluginName", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService", "templateService",
+    .directive("qingPlugin", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService", "templateService",
         function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService) {
-            var tplUrl = "design/directives/pluginName/pluginName.html",
+            var tplUrl = "design/directives/pluginName/qingPlugin.html",
                 toolBarHightLightClass = "tool-bar-hight-light";
 
             return {
@@ -148,7 +157,7 @@ angular.module("qing")
                 scope: {
                 },
                 link: function (scope, element, attrs) {
-                    scope.pluginName = attrs.pluginName
+                    scope.pluginName = attrs.qingPlugin
                     scope.pluginData = scope.$eval(attrs.pluginData);
 
                     $http.get(tplUrl, {cache: $templateCache})
@@ -192,15 +201,19 @@ angular.module("qing")
     ]);
 
 angular.module("qing")
-    .directive("qingAdd", ["$compile", "templateService", "pluginModalService", "guid",
-        function ($compile, templateService, pluginModalService, guid) {
+    .directive("qingAdd", ["$compile", "templateService", "pluginModalService",
+        function ($compile, templateService, pluginModalService) {
             return {
                 templateUrl: "design/directives/qingAdd/qingAdd.html",
                 restrict: "EA",
+                scope: {
+                    "qingMark": "="
+                },
                 link: function (scope, element, attrs) {
-                    scope.designeCallBack = function (pluginName, result) {
-                        angular.element($compile(result)(scope)).insertBefore(element);
-                        templateService.savePanelTemplate(scope.qingMark, result);
+                    scope.designCallBack = function (pluginName, html) {
+                        html = angular.isObject(html) ? html[0].outerHTML : html;
+                        $compile(html)(scope).insertBefore(element);
+                        templateService.savePanelTemplate(scope.qingMark, html);
                     };
                 },
                 controller: ["$scope", function ($scope) {
@@ -219,7 +232,7 @@ angular.module("qing")
                         pluginModalService.showDesignModal(pluginName)
                             .then(function (result) {
                                 //OK
-                                $scope.designeCallBack(pluginName, result);
+                                $scope.designCallBack(pluginName, result);
                             }, function () {
                                 //Cancel
                             });
@@ -345,7 +358,7 @@ angular.module("qing")
                 $pluginElm.attr({
                     "qing-mask": guid.newId(),
                     "plugin-data": angular.toJson(result.data),
-                    "plugin-name": pluginName
+                    "qing-plugin": pluginName
                 });
 
                 return $pluginElm;
@@ -435,7 +448,7 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'design/directives/pluginName/pluginName.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/services/modal/addCont.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/services/modal/addCont.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
@@ -444,8 +457,8 @@ angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$
     "</form>");
 }]);
 
-angular.module("design/directives/pluginName/pluginName.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("design/directives/pluginName/pluginName.html",
+angular.module("design/directives/pluginName/qingPlugin.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/pluginName/qingPlugin.html",
     "<div class=\"qing-container\">\n" +
     "    <div class=\"design-tool-bar\" ng-show=\"showDesignToolBar\">\n" +
     "        <div class=\"btn-group\">\n" +
@@ -474,10 +487,10 @@ angular.module("design/directives/qingAdd/qingAdd.html", []).run(["$templateCach
 
 angular.module("design/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/qingPanel/qingPanel.html",
-    "<div class=\"qing-panel\" qing-drag >\n" +
+    "<div class=\"qing-panel\" qing-drag>\n" +
     "    <!--plugin-name=\"qing-panel\" 暂时注释 是否可用有待商榷-->\n" +
     "    <div class=\"content\"></div>\n" +
-    "    <qing-add></qing-add>\n" +
+    "    <qing-add qing-mark=\"qingMark\"></qing-add>\n" +
     "</div>");
 }]);
 

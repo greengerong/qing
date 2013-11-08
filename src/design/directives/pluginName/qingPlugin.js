@@ -1,7 +1,7 @@
 angular.module("qing")
-    .directive("pluginName", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService", "templateService",
+    .directive("qingPlugin", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService", "templateService",
         function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService) {
-            var tplUrl = "design/directives/pluginName/pluginName.html",
+            var tplUrl = "design/directives/pluginName/qingPlugin.html",
                 toolBarHightLightClass = "tool-bar-hight-light";
 
             return {
@@ -9,7 +9,7 @@ angular.module("qing")
                 scope: {
                 },
                 link: function (scope, element, attrs) {
-                    scope.pluginName = attrs.pluginName
+                    scope.pluginName = attrs.qingPlugin
                     scope.pluginData = scope.$eval(attrs.pluginData);
 
                     $http.get(tplUrl, {cache: $templateCache})

@@ -72,53 +72,62 @@ angular.module("qing")
         }]);
 
 angular.module('qing')
-    .service('localStorage', function Cover() {
+    .service('localStorage', ["$window", "$log", function ($window, $log) {
 
         var KEY = 'qing.localStorage',
-            data = JSON.parse(localStorage.getItem(KEY)) || {};
+            self = this;
 
-        var storage = function () {
-            localStorage.setItem(KEY, JSON.stringify(data));
-        }
-
-        this.put = function (id, text) {
-            data[id] = text;
-            storage();
+        var getData = function () {
+            return angular.fromJson($window.localStorage.getItem(KEY)) || {};
         };
 
-        this.get = function (id) {
-            if (data[id]) {
-                return data[id];
-            } else {
-                return null;
-            }
-        }
+        var saveData = function (data) {
+            $window.localStorage.setItem(KEY, angular.toJson(data));
+        };
 
-    });
+        self.put = function (id, text) {
+            var data = getData();
+            data[id] = text;
+            $log.info(String.format("localStorage save data for mark {0}. ", id), data);
+            saveData(data);
+        };
+
+        self.get = function (id) {
+            var data = getData();
+            $log.info(String.format("localStorage get data for mark {0}.", id), data);
+            return data[id] ? data[id] : null;
+        };
+    }]);
 
 angular.module('qing')
     .service('templateService', ["$http", "$templateCache", "$q", "localStorage",
         function ($http, $templateCache, $q, localStorage) {
+            var self = this;
 
-
-            this.getPanelTemplate = function (mark) {
+            self.getPanelTemplate = function (mark) {
                 // var tplUrl = String.format(panelConfig.url, mark);
                 //return $http.get(tplUrl, {cache: $templateCache});
                 // mock
                 var defer = $q.defer();
-                defer.resolve(decodeURI(localStorage.get(mark)));
+                var data = localStorage.get(mark);
+                var result = data ? decodeURI(data) : null;
+                defer.resolve(result);
                 return defer.promise;
             }
 
-            this.savePanelTemplate = function (mark, html) {
-
-                //TODO: maybe object
-                if (angular.isObject(html) && html.jquery) {
-                    html = html[0].outerHTML;
-                }
-                // mock
+            self.savePanelTemplate = function (mark, html) {
                 var defer = $q.defer();
-                defer.resolve(localStorage.put(mark, encodeURI(html)));
+                self.getPanelTemplate(mark).then(function (container) {
+                    if (!container) {
+                        container = "<div></div>";
+                    }
+
+                    var $elm = angular.element(container).append(angular.element(html));
+                    defer.resolve(localStorage.put(mark, encodeURI($elm[0].outerHTML)));
+                }, function () {
+                    defer.reject(arguments);
+                });
+
                 return defer.promise;
             }
 

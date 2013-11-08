@@ -16,7 +16,7 @@ angular.module("qing")
                 $pluginElm.attr({
                     "qing-mask": guid.newId(),
                     "plugin-data": angular.toJson(result.data),
-                    "plugin-name": pluginName
+                    "qing-plugin": pluginName
                 });
 
                 return $pluginElm;
