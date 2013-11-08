@@ -321,12 +321,12 @@ angular.module("qing")
 var qing = qing || {};
 qing.qingPanelDirective("design");
 angular.module('qing')
-    .directive('rowContainer', ["$compile", "gridConfig", "guid", "pluginsService",
-        function ($compile, gridConfig, guid, pluginsService) {
+    .directive('rowContainer', ["$compile", "gridConfig", "guid", "pluginsService",  "pluginType",
+        function ($compile, gridConfig, guid, pluginsService,pluginType) {
             pluginsService.register("row-container", {
                 "title": "row container",
                 "description": "",
-                "type": "container"//(just container/control)
+                "type": pluginType.CONTAINER
             });
 
             return {
@@ -498,11 +498,24 @@ angular.module("qing")
         }]);
 
 angular.module("qing").constant("pluginsConfig", {})
-    .service("pluginsService", ["pluginsConfig", "$log",
-        function (pluginsConfig, $log) {
+    .factory("pluginType", function () {
+        return {
+            "CONTROL": "control",
+            "CONTAINER": "container",
+            "values": ["control", "container"]
+        };
+    })
+    .service("pluginsService", ["pluginsConfig", "$log", "pluginType",
+        function (pluginsConfig, $log, pluginType) {
             var self = this;
 
             self.register = function (name, options) {
+                var pluginTypes = pluginType.values;
+                if (!options.title || pluginTypes.indexOf(options.type.toLowerCase()) == -1) {
+                    $log.error(String.format("Should be give title and type, also type should be in [{0}]",
+                        pluginTypes.join(",")));
+                    return;
+                }
                 if (pluginsConfig.hasOwnProperty(name)) {
                     $log.error(String.format("Plugin {0} already register!", name));
                     return;

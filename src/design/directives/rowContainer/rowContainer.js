@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('qing')
-    .directive('rowContainer', ["$compile", "gridConfig", "guid", "pluginsService",
-        function ($compile, gridConfig, guid, pluginsService) {
+    .directive('rowContainer', ["$compile", "gridConfig", "guid", "pluginsService", "pluginType",
+        function ($compile, gridConfig, guid, pluginsService, pluginType) {
             pluginsService.register("row-container", {
                 "title": "row container",
                 "description": "",
-                "type": "container"//(just container/control)
+                "type": pluginType.CONTAINER
             });
 
             return {
