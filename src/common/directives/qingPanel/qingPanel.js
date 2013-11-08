@@ -11,7 +11,6 @@ qing.qingPanelDirective = function (phase) {
                     restrict: "EA",
                     replace: true,
                     scope: {
-                        currentForm: "="
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;

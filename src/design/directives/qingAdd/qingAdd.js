@@ -11,8 +11,8 @@ angular.module("qing")
                 },
                 link: function (scope, element, attrs) {
                     scope.designCallBack = function (pluginName, html) {
-                        html = angular.isObject(html) ? html[0].outerHTML : html;
-                        $compile(html)(scope).insertBefore(element);
+                        //compile on qing-panel scope;
+                        $compile(html)(scope.$parent).insertBefore(element);
                         templateService.savePanelTemplate(scope.qingMark, html);
                     };
                 },

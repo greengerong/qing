@@ -9,6 +9,7 @@ angular.module("qing")
                 scope: {
                 },
                 link: function (scope, element, attrs) {
+                    scope.qingMark = attrs.qingMark;
                     scope.pluginName = attrs.qingPlugin
                     scope.pluginData = scope.$eval(attrs.pluginData);
 
@@ -33,8 +34,9 @@ angular.module("qing")
                         });
 
                     scope.designeCallBack = function (pluginName, result) {
-                        element.replaceWith(angular.element($compile(result)(scope)));
-                        templateService.savePanelTemplate(attrs.qingMark, result);
+                        var $parent = scope.$parent;
+                        element.replaceWith(angular.element($compile(result)($parent)));
+                        templateService.updatePanelTemplate($parent.qingMark, scope.qingMark, result);
                     };
                 },
                 controller: ["$scope", function ($scope) {

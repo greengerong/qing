@@ -14,12 +14,13 @@ angular.module("qing")
                     : result.html;
                 var $pluginElm = angular.element(html);
                 $pluginElm.attr({
-                    "qing-mask": guid.newId(),
+                    "qing-mark": guid.newId(),
                     "plugin-data": angular.toJson(result.data),
-                    "qing-plugin": pluginName
+                    "qing-plugin": pluginName,
+                    "parent-qing-mark": "qing-mark"
                 });
 
-                return $pluginElm;
+                return $pluginElm[0].outerHTML;
             };
 
             var promiseWarp = function (pluginName, modalInstance) {

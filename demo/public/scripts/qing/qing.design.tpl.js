@@ -16,7 +16,6 @@ qing.qingPanelDirective = function (phase) {
                     restrict: "EA",
                     replace: true,
                     scope: {
-                        currentForm: "="
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
@@ -128,7 +127,21 @@ angular.module('qing')
                 });
 
                 return defer.promise;
-            }
+            };
+
+            self.updatePanelTemplate = function (parentMark, mark, html) {
+                var defer = $q.defer();
+                self.getPanelTemplate(parentMark).then(function (container) {
+                    var oldElmSector = String.format("[qing-mark='{0}']", mark);
+                    var $elm = angular.element(container);
+                    $elm.find(oldElmSector).replaceWith(angular.element(html));
+                    defer.resolve(localStorage.put(parentMark, encodeURI($elm[0].outerHTML)));
+                }, function () {
+                    defer.reject(arguments);
+                });
+
+                return defer.promise;
+            };
 
         }]);
 
@@ -157,6 +170,7 @@ angular.module("qing")
                 scope: {
                 },
                 link: function (scope, element, attrs) {
+                    scope.qingMark = attrs.qingMark;
                     scope.pluginName = attrs.qingPlugin
                     scope.pluginData = scope.$eval(attrs.pluginData);
 
@@ -181,8 +195,9 @@ angular.module("qing")
                         });
 
                     scope.designeCallBack = function (pluginName, result) {
-                        element.replaceWith(angular.element($compile(result)(scope)));
-                        templateService.savePanelTemplate(attrs.qingMark, result);
+                        var $parent = scope.$parent;
+                        element.replaceWith(angular.element($compile(result)($parent)));
+                        templateService.updatePanelTemplate($parent.qingMark, scope.qingMark, result);
                     };
                 },
                 controller: ["$scope", function ($scope) {
@@ -211,8 +226,8 @@ angular.module("qing")
                 },
                 link: function (scope, element, attrs) {
                     scope.designCallBack = function (pluginName, html) {
-                        html = angular.isObject(html) ? html[0].outerHTML : html;
-                        $compile(html)(scope).insertBefore(element);
+                        //compile on qing-panel scope;
+                        $compile(html)(scope.$parent).insertBefore(element);
                         templateService.savePanelTemplate(scope.qingMark, html);
                     };
                 },
@@ -356,12 +371,13 @@ angular.module("qing")
                     : result.html;
                 var $pluginElm = angular.element(html);
                 $pluginElm.attr({
-                    "qing-mask": guid.newId(),
+                    "qing-mark": guid.newId(),
                     "plugin-data": angular.toJson(result.data),
-                    "qing-plugin": pluginName
+                    "qing-plugin": pluginName,
+                    "parent-qing-mark": "qing-mark"
                 });
 
-                return $pluginElm;
+                return $pluginElm[0].outerHTML;
             };
 
             var promiseWarp = function (pluginName, modalInstance) {

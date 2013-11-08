@@ -17,7 +17,6 @@ qing.qingPanelDirective = function (phase) {
                     restrict: "EA",
                     replace: true,
                     scope: {
-                        currentForm: "="
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
@@ -129,7 +128,21 @@ angular.module('qing')
                 });
 
                 return defer.promise;
-            }
+            };
+
+            self.updatePanelTemplate = function (parentMark, mark, html) {
+                var defer = $q.defer();
+                self.getPanelTemplate(parentMark).then(function (container) {
+                    var oldElmSector = String.format("[qing-mark='{0}']", mark);
+                    var $elm = angular.element(container);
+                    $elm.find(oldElmSector).replaceWith(angular.element(html));
+                    defer.resolve(localStorage.put(parentMark, encodeURI($elm[0].outerHTML)));
+                }, function () {
+                    defer.reject(arguments);
+                });
+
+                return defer.promise;
+            };
 
         }]);
 
