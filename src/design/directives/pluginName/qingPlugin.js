@@ -1,6 +1,7 @@
 angular.module("qing")
-    .directive("qingPlugin", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService", "templateService",
-        function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService) {
+    .directive("qingPlugin", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService",
+        "templateService", "messageBox",
+        function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService, messageBox) {
             var tplUrl = "design/directives/pluginName/qingPlugin.html",
                 toolBarHightLightClass = "tool-bar-hight-light";
 
@@ -38,6 +39,13 @@ angular.module("qing")
                         element.replaceWith(angular.element($compile(result)($parent)));
                         templateService.updatePanelTemplate($parent.qingMark, scope.qingMark, result);
                     };
+
+                    scope.removePlugin = function () {
+                        var $parent = scope.$parent;
+                        templateService.removePanelTemplate($parent.qingMark, scope.qingMark);
+                        element.remove();
+                    };
+
                 },
                 controller: ["$scope", function ($scope) {
                     $scope.edit = function () {
@@ -48,6 +56,12 @@ angular.module("qing")
                             }, function () {
                                 //Cancel
                             });
+                    };
+
+                    $scope.remove = function () {
+                        messageBox.confirm({title: "Remove?", content: "Are your sure remove this?"}).then(function () {
+                            $scope.removePlugin();
+                        });
                     };
                 }]
             }

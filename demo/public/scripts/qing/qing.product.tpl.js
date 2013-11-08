@@ -98,6 +98,39 @@ angular.module('qing')
         };
     }]);
 
+angular.module("qing")
+    .service("messageBox", ["$modal", "$q", function ($modal, $q) {
+        var self = this;
+
+        self.confirm = function (options) {
+            var modalInstance = $modal.open({
+                templateUrl: "common/services/messageBox/messageBox.html",
+                controller: [ "$scope", "$modalInstance",
+                    function ($scope, $modalInstance) {
+                        $scope.options = options;
+
+                        $scope.ok = function () {
+                            $modalInstance.close();
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                    }]
+            });
+
+            var defer = $q.defer();
+            modalInstance.result.then(function (reason) {
+                defer.resolve(reason);
+            }, function () {
+                defer.reject(arguments);
+            });
+            return defer.promise;
+        };
+
+    }]);
+
 angular.module('qing')
     .service('templateService', ["$http", "$templateCache", "$q", "localStorage",
         function ($http, $templateCache, $q, localStorage) {
@@ -144,6 +177,20 @@ angular.module('qing')
                 return defer.promise;
             };
 
+            self.removePanelTemplate = function (parentMark, mark) {
+                var defer = $q.defer();
+                self.getPanelTemplate(parentMark).then(function (container) {
+                    var oldElmSector = String.format("[qing-mark='{0}']", mark);
+                    var $elm = angular.element(container);
+                    $elm.find(oldElmSector).remove();
+                    defer.resolve(localStorage.put(parentMark, encodeURI($elm[0].outerHTML)));
+                }, function () {
+                    defer.reject(arguments);
+                });
+
+                return defer.promise;
+            };
+
         }]);
 
 angular.module("qing")
@@ -163,13 +210,30 @@ String.format = function () {
 var qing = qing || {};
 qing.qingPanelDirective("product");
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'product/directives/qingPanel/qingPanel.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'product/directives/qingPanel/qingPanel.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
     "<form>\n" +
     "    <qing-panel qing-mark=\"{{qingMark}}\"></qing-panel>\n" +
     "</form>");
+}]);
+
+angular.module("common/services/messageBox/messageBox.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("common/services/messageBox/messageBox.html",
+    "<div class=\"modal-header\">\n" +
+    "    <button type=\"button\" class=\"close\" ng-click=\"cancel()\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button>\n" +
+    "    <h4 class=\"modal-title\" ng-bind=\"options.title\"></h4>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body\" ng-show=\"!!options.content\" ng-bind-html-unsafe=\"options.content\">\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-hide=\"options.hideOk\" ng-click=\"ok()\"\n" +
+    "            ng-disabled=\"designForm.$invalid\" ng-bind=\"options.okText || '&nbsp;OK&nbsp;'\">\n" +
+    "    </button>\n" +
+    "    <button type=\"button\" class=\"btn btn-warning\" ng-hide=\"options.hideCancel\" ng-bind=\"options.cancelText || 'Cancel'\"\n" +
+    "            ng-click=\"cancel()\"></button>\n" +
+    "</div>");
 }]);
 
 angular.module("product/directives/qingPanel/qingPanel.html", []).run(["$templateCache", function($templateCache) {

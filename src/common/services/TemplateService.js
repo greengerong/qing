@@ -46,4 +46,18 @@ angular.module('qing')
                 return defer.promise;
             };
 
+            self.removePanelTemplate = function (parentMark, mark) {
+                var defer = $q.defer();
+                self.getPanelTemplate(parentMark).then(function (container) {
+                    var oldElmSector = String.format("[qing-mark='{0}']", mark);
+                    var $elm = angular.element(container);
+                    $elm.find(oldElmSector).remove();
+                    defer.resolve(localStorage.put(parentMark, encodeURI($elm[0].outerHTML)));
+                }, function () {
+                    defer.reject(arguments);
+                });
+
+                return defer.promise;
+            };
+
         }]);
