@@ -1,7 +1,7 @@
 angular.module("qing")
     .directive("qingPlugin", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService",
-        "templateService", "messageBox",
-        function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService, messageBox) {
+        "templateService", "messageBox", "pluginsService",
+        function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService, messageBox, pluginsService) {
             var tplUrl = "design/directives/pluginName/qingPlugin.html",
                 toolBarHightLightClass = "tool-bar-hight-light";
 
@@ -34,17 +34,31 @@ angular.module("qing")
                             e.stopPropagation();
                         });
 
-                    scope.designeCallBack = function (pluginName, result) {
+                    scope.designeCallBack = function (pluginName, oldPluginData, result) {
                         var $parent = scope.$parent;
-                        element.replaceWith(angular.element($compile(result)($parent)));
-                        templateService.updatePanelTemplate($parent.qingMark, scope.qingMark, result);
+                        templateService.updatePanelTemplate($parent.qingMark, scope.qingMark, result).
+                            then(function () {
+                                var plugin = pluginsService.getPlugin(pluginName);
+                                if (plugin && plugin.events && plugin.events.update) {
+                                    plugin.events.update(oldPluginData, result);
+                                }
+
+                                element.replaceWith(angular.element($compile(result)($parent)));
+                            });
                     };
 
-                    scope.removePlugin = function () {
+                    scope.removePlugin = function (pluginName, pluginData) {
                         var $parent = scope.$parent;
-                        templateService.removePanelTemplate($parent.qingMark, scope.qingMark);
-                        element.remove();
-                        scope.$destroy();
+                        templateService.removePanelTemplate($parent.qingMark, scope.qingMark)
+                            .then(function () {
+                                var plugin = pluginsService.getPlugin(pluginName);
+                                if (plugin && plugin.events && plugin.events.remove) {
+                                    plugin.events.remove(pluginData);
+                                }
+
+                                element.remove();
+                                scope.$destroy();
+                            });
                     };
 
                 },
@@ -53,7 +67,7 @@ angular.module("qing")
                         pluginModalService.showDesignModal($scope.pluginName, $scope.pluginData)
                             .then(function (result) {
                                 //OK
-                                $scope.designeCallBack($scope.pluginName, result);
+                                $scope.designeCallBack($scope.pluginName, $scope.pluginData, result);
                             }, function () {
                                 //Cancel
                             });
@@ -61,7 +75,7 @@ angular.module("qing")
 
                     $scope.remove = function () {
                         messageBox.confirm({title: "Remove?", content: "Are your sure remove this?"}).then(function () {
-                            $scope.removePlugin();
+                            $scope.removePlugin($scope.pluginName, $scope.pluginData);
                         });
                     };
                 }]

@@ -133,6 +133,15 @@ angular.module('qing')
             $log.info(String.format("localStorage get data for mark {0}.", id), data);
             return data[id] ? data[id] : null;
         };
+
+        self.remove = function (id) {
+            var data = getData();
+            if (data.hasOwnProperty(id)) {
+                delete  data[id];
+                $log.info(String.format("localStorage remove data for mark {0}. ", id), data);
+                saveData(data);
+            }
+        };
     }]);
 
 angular.module("qing")
@@ -231,6 +240,12 @@ angular.module('qing')
             self.saveOrUpdateTextTemplate = function (mark, html) {
                 var defer = $q.defer();
                 defer.resolve(localStorage.put(mark, html));
+                return defer.promise;
+            };
+
+            self.removeTextTemplate = function (mark) {
+                var defer = $q.defer();
+                defer.resolve(localStorage.remove(mark));
                 return defer.promise;
             };
 

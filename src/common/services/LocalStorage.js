@@ -26,4 +26,13 @@ angular.module('qing')
             $log.info(String.format("localStorage get data for mark {0}.", id), data);
             return data[id] ? data[id] : null;
         };
+
+        self.remove = function (id) {
+            var data = getData();
+            if (data.hasOwnProperty(id)) {
+                delete  data[id];
+                $log.info(String.format("localStorage remove data for mark {0}. ", id), data);
+                saveData(data);
+            }
+        };
     }]);

@@ -6000,3 +6000,6 @@ td.visible-print {
   color: #333;
   background-color: #f3f3f3;
 }
+.text-editor-design {
+  min-height: 150px;
+}

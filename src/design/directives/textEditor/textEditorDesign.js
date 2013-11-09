@@ -5,7 +5,14 @@ angular.module("qing")
             pluginsService.register("text-editor-design", {
                 "title": "text editor",
                 "description": "",
-                "type": pluginType.CONTAINER
+                "type": pluginType.CONTAINER,
+                "events": {
+                    "remove": function (data) {
+                        var qingMark = data.data.qingMark;
+                        if (qingMark) {
+                            templateService.removeTextTemplate(qingMark);
+                        }
+                    }}
             });
 
             return {
@@ -13,6 +20,7 @@ angular.module("qing")
                 replace: true,
                 link: function (scope, element, attrs) {
                     element.attr({contenteditable: true});
+                    element.addClass("text-editor-design");
                     scope.editor = scope.editor || {};
                     element.html(scope.editor.html ? scope.editor.html : defaultText);
 

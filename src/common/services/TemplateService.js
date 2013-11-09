@@ -66,4 +66,10 @@ angular.module('qing')
                 return defer.promise;
             };
 
+            self.removeTextTemplate = function (mark) {
+                var defer = $q.defer();
+                defer.resolve(localStorage.remove(mark));
+                return defer.promise;
+            };
+
         }]);
