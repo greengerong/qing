@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-08 */
+/*! qing - v0.0.0 - 2013-11-09 */
 angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular" ,"ui"])
     .constant("gridConfig", {
         "totalColumn": 12
@@ -68,6 +68,43 @@ angular.module("qing")
                 }]
             };
         }]);
+
+angular.module("qing")
+    .directive("textEditor", ["templateService",
+        function (templateService) {
+            return {
+                restrict: 'EA',
+                replace: true,
+                scope: true,
+                link: function (scope, element, attrs) {
+                    scope.qingMark = attrs.qingMark;
+                    element.attr({contenteditable: true});
+
+                    var instance = CKEDITOR.inline(element[0], {
+                        on: {
+                            blur: function (event) {
+                                if (event.editor.checkDirty()) {
+                                    templateService.saveOrUpdateTextTemplate(scope.qingMark, event.editor.getData());
+                                }
+                            }
+                        }
+                    });
+
+
+                    templateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
+                        if (tplContent && (tplContent.trim())) {
+                            instance.setData(tplContent.trim());
+                        }
+                    });
+
+                    scope.$on("$destroy", function () {
+                        instance.destroy();
+                    });
+
+                }
+            }
+        }])
+;
 
 angular.module('qing')
     .service('localStorage', ["$window", "$log", function ($window, $log) {
@@ -187,6 +224,12 @@ angular.module('qing')
                     defer.reject(arguments);
                 });
 
+                return defer.promise;
+            };
+
+            self.saveOrUpdateTextTemplate = function (mark, html) {
+                var defer = $q.defer();
+                defer.resolve(localStorage.put(mark, html));
                 return defer.promise;
             };
 
@@ -321,8 +364,8 @@ angular.module("qing")
 var qing = qing || {};
 qing.qingPanelDirective("design");
 angular.module('qing')
-    .directive('rowContainer', ["$compile", "gridConfig", "guid", "pluginsService",  "pluginType",
-        function ($compile, gridConfig, guid, pluginsService,pluginType) {
+    .directive('rowContainer', ["$compile", "gridConfig", "guid", "pluginsService", "pluginType",
+        function ($compile, gridConfig, guid, pluginsService, pluginType) {
             pluginsService.register("row-container", {
                 "title": "row container",
                 "description": "",
@@ -408,6 +451,55 @@ angular.module('qing')
         }]);
 
 angular.module("qing")
+    .directive("textEditorDesign", ["pluginsService", "pluginType", "templateService", "guid",
+        function (pluginsService, pluginType, templateService, guid) {
+            var defaultText = "You can input any thing in there.";
+            pluginsService.register("text-editor-design", {
+                "title": "text editor",
+                "description": "",
+                "type": pluginType.CONTAINER
+            });
+
+            return {
+                restrict: 'EA',
+                replace: true,
+                link: function (scope, element, attrs) {
+                    element.attr({contenteditable: true});
+                    scope.editor = scope.editor || {};
+                    element.html(scope.editor.html ? scope.editor.html : defaultText);
+
+                    var instance = CKEDITOR.inline(element[0]);
+
+                    scope.$on("$destroy", function () {
+                        instance.destroy();
+                    });
+
+                    scope.getResult = function () {
+                        var html = instance.getData();
+                        var qingMark = scope.editor.qingMark ? scope.editor.qingMark : guid.newId();
+                        templateService.savePanelTemplate(qingMark, html);
+                        return {
+                            tpl: {
+                                url: "design/directives/textEditor/textEditorDesign.html",
+                                data: {
+                                    html: html,
+                                    qingMark: qingMark
+                                }
+                            },
+                            data: {
+                                "key": "editor",
+                                "data": {
+                                    "html": html,
+                                    "qingMark": qingMark
+                                }
+                            }
+                        };
+                    };
+                }
+            }
+        }]);
+
+angular.module("qing")
     .service("guid", [
         function () {
             var uid = 0;
@@ -432,11 +524,15 @@ angular.module("qing")
                     : result.html;
                 var $pluginElm = angular.element(html);
                 $pluginElm.attr({
-                    "qing-mark": guid.newId(),
                     "plugin-data": angular.toJson(result.data),
                     "qing-plugin": pluginName,
                     "parent-qing-mark": "qing-mark"
                 });
+
+                if (!$pluginElm.attr("qing-mark")) {
+                    console.log($pluginElm.attr("qing-mark"), "in qing-mark")
+                    $pluginElm.attr({ "qing-mark": guid.newId()});
+                }
 
                 return $pluginElm[0].outerHTML;
             };
@@ -538,7 +634,7 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/services/modal/addCont.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
@@ -582,6 +678,8 @@ angular.module("design/directives/qingAdd/qingAdd.html", []).run(["$templateCach
     "    <div class=\"add-list\">\n" +
     "        <ul>\n" +
     "            <li><a ng-click=\"addContModal('row-container');\"><i class=\"glyphicon glyphicon-th\"></i>Container</a></li>\n" +
+    "            <li><a ng-click=\"addContModal('text-editor-design');\"><i class=\"glyphicon glyphicon-th\"></i>Text Editor</a>\n" +
+    "            </li>\n" +
     "            <li><a><i class=\"glyphicon glyphicon-list-alt\"></i>Conponment</a></li>\n" +
     "        </ul>\n" +
     "    </div>\n" +
@@ -632,6 +730,13 @@ angular.module("design/directives/rowContainer/rowContainerResult.html", []).run
     "        <qing-panel qing-mark=\"<%= guid.newId() %>\"></qing-panel>\n" +
     "    </div>\n" +
     "    <% });%>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/textEditor/textEditorDesign.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/textEditor/textEditorDesign.html",
+    "<div class=\"text-editor\" text-editor=\"\" qing-mark=\"<%= qingMark %>\">\n" +
+    "    <%= html %>\n" +
     "</div>");
 }]);
 

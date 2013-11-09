@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-08 */
+/*! qing - v0.0.0 - 2013-11-09 */
 //TODO: should can be add by each design directive; Maybe use window Array
 angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular"])
     .constant('panelConfig', {
@@ -69,6 +69,43 @@ angular.module("qing")
                 }]
             };
         }]);
+
+angular.module("qing")
+    .directive("textEditor", ["templateService",
+        function (templateService) {
+            return {
+                restrict: 'EA',
+                replace: true,
+                scope: true,
+                link: function (scope, element, attrs) {
+                    scope.qingMark = attrs.qingMark;
+                    element.attr({contenteditable: true});
+
+                    var instance = CKEDITOR.inline(element[0], {
+                        on: {
+                            blur: function (event) {
+                                if (event.editor.checkDirty()) {
+                                    templateService.saveOrUpdateTextTemplate(scope.qingMark, event.editor.getData());
+                                }
+                            }
+                        }
+                    });
+
+
+                    templateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
+                        if (tplContent && (tplContent.trim())) {
+                            instance.setData(tplContent.trim());
+                        }
+                    });
+
+                    scope.$on("$destroy", function () {
+                        instance.destroy();
+                    });
+
+                }
+            }
+        }])
+;
 
 angular.module('qing')
     .service('localStorage', ["$window", "$log", function ($window, $log) {
@@ -188,6 +225,12 @@ angular.module('qing')
                     defer.reject(arguments);
                 });
 
+                return defer.promise;
+            };
+
+            self.saveOrUpdateTextTemplate = function (mark, html) {
+                var defer = $q.defer();
+                defer.resolve(localStorage.put(mark, html));
                 return defer.promise;
             };
 

@@ -13,6 +13,7 @@ module.exports = function (config) {
         files: [
             'demo/public/scripts/lib/jquery.js',
             'demo/public/scripts/lib/angular.js',
+            'demo/public/scripts/lib/jquery-resources/ckeditor/ckeditor.js',
             'demo/public/scripts/lib/jquery-resources/**/*.js',
             'demo/public/scripts/lib/angular-resources/**/*.js',
             'test/lib/angular-mocks.js',

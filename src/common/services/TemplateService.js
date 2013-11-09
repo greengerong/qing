@@ -60,4 +60,10 @@ angular.module('qing')
                 return defer.promise;
             };
 
+            self.saveOrUpdateTextTemplate = function (mark, html) {
+                var defer = $q.defer();
+                defer.resolve(localStorage.put(mark, html));
+                return defer.promise;
+            };
+
         }]);

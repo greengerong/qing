@@ -14,11 +14,15 @@ angular.module("qing")
                     : result.html;
                 var $pluginElm = angular.element(html);
                 $pluginElm.attr({
-                    "qing-mark": guid.newId(),
                     "plugin-data": angular.toJson(result.data),
                     "qing-plugin": pluginName,
                     "parent-qing-mark": "qing-mark"
                 });
+
+                if (!$pluginElm.attr("qing-mark")) {
+                    console.log($pluginElm.attr("qing-mark"), "in qing-mark")
+                    $pluginElm.attr({ "qing-mark": guid.newId()});
+                }
 
                 return $pluginElm[0].outerHTML;
             };

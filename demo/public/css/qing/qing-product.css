@@ -5920,3 +5920,7 @@ td.visible-print {
   margin-bottom: 2px;
   position: relative;
 }
+。text-editor {
+  line-height: 20px;
+  min-height: 20px;
+}
