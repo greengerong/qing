@@ -25,7 +25,7 @@ angular.module("qing")
                     scope.getResult = function () {
                         var html = instance.getData();
                         var qingMark = scope.editor.qingMark ? scope.editor.qingMark : guid.newId();
-                        templateService.savePanelTemplate(qingMark, html);
+                        templateService.saveOrUpdateTextTemplate(qingMark, html);
                         return {
                             tpl: {
                                 url: "design/directives/textEditor/textEditorDesign.html",

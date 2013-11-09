@@ -478,7 +478,7 @@ angular.module("qing")
                     scope.getResult = function () {
                         var html = instance.getData();
                         var qingMark = scope.editor.qingMark ? scope.editor.qingMark : guid.newId();
-                        templateService.savePanelTemplate(qingMark, html);
+                        templateService.saveOrUpdateTextTemplate(qingMark, html);
                         return {
                             tpl: {
                                 url: "design/directives/textEditor/textEditorDesign.html",
@@ -736,8 +736,10 @@ angular.module("design/directives/rowContainer/rowContainerResult.html", []).run
 
 angular.module("design/directives/textEditor/textEditorDesign.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/textEditor/textEditorDesign.html",
-    "<div class=\"text-editor\" text-editor=\"\" qing-mark=\"<%= qingMark %>\">\n" +
-    "    <%= html %>\n" +
+    "<div>\n" +
+    "    <div class=\"text-editor\" text-editor=\"\" qing-mark=\"<%= qingMark %>\">\n" +
+    "        <%= html %>\n" +
+    "    </div>\n" +
     "</div>");
 }]);
 
