@@ -44,6 +44,7 @@ angular.module("qing")
                         var $parent = scope.$parent;
                         templateService.removePanelTemplate($parent.qingMark, scope.qingMark);
                         element.remove();
+                        scope.$destroy();
                     };
 
                 },
