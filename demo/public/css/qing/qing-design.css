@@ -5922,7 +5922,6 @@ td.visible-print {
 }
 。text-editor {
   line-height: 20px;
-  min-height: 20px;
 }
 .design-tool-bar {
   position: absolute;
@@ -5999,6 +5998,10 @@ td.visible-print {
   border-bottom: 0 none;
   color: #333;
   background-color: #f3f3f3;
+}
+。text-editor {
+  line-height: 20px;
+  min-height: 20px;
 }
 .text-editor-design {
   min-height: 150px;
