@@ -1,14 +1,17 @@
 'use strict';
 
 angular.module('qing')
-    .directive('rowContainer', ["$compile", "gridConfig", "guid", "pluginsService", "pluginType",
-        function ($compile, gridConfig, guid, pluginsService, pluginType) {
-            pluginsService.register("row-container", {
-                "title": "row container",
-                "description": "",
-                "type": pluginType.CONTAINER
-            });
-
+    .run(["pluginsService","pluginType",function(pluginsService,pluginType){
+        console.log("pluginsService");
+        pluginsService.register("row-container", {
+            "title": "row container",
+            "description": "",
+            "icon" : "glyphicon-th-list",
+            "type": pluginType.CONTAINER
+        });
+    }])
+    .directive('rowContainer', ["$compile", "gridConfig", "guid",
+        function ($compile, gridConfig, guid) {
             return {
                 templateUrl: 'design/directives/rowContainer/rowContainer.html',
                 restrict: 'EA',

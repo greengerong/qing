@@ -1,3 +1,5 @@
+//a9a8a1
+
 .qing-add{
   margin:2px;
   position:relative;
@@ -26,17 +28,30 @@
       margin:0 15px;
       text-align:center;
       height:34px;
-      padding:3px 0 8px;
       border-top:1px #ccc dashed;
       overflow: hidden;
     }
     li{
       list-style: none;
+      height: 28px;
+      line-height:28px;
+      overflow: hidden;
       display: inline-block;
-      margin: 0 10px;
+      padding:0 10px;
+      margin-top:2px;
+      box-sizing: content-box;
+      border-radius:3px;
       a{
         text-decoration: none;
         cursor:pointer;
+        display:block;
+        color: #3f5167;
+      }
+      &.cur{
+        background-color:#60cdb5;
+        a{
+          color: #fff;
+        }
       }
     }
     .glyphicon{
@@ -45,7 +60,7 @@
     }
   }
   .sub-add-list{
-    opacity: 0;
+    //opacity: 0;
     position: absolute;
     left: -1px;
     right: -1px;
@@ -54,8 +69,13 @@
     background-color:#f3f3f3;
     border-top:0 none;
     transition: all .5s ease;
+    display: none;
+    font-size:12px;
     &.active{
-      opacity: 1;
+      display: block;
+    }
+    .glyphicon{
+      font-size:16px;
     }
   }
   &.open {

@@ -1,20 +1,23 @@
 angular.module("qing")
-    .directive("textEditorDesign", ["pluginsService", "pluginType", "templateService", "guid",
-        function (pluginsService, pluginType, templateService, guid) {
+    .run(["pluginsService","pluginType","templateService",function(pluginsService,pluginType,templateService){
+        console.log("pluginsService");
+        pluginsService.register("text-editor-design", {
+            "title": "text editor",
+            "description": "",
+            "type": pluginType.CONTAINER,
+            "icon":"glyphicon-text-width",
+            "events": {
+                "remove": function (data) {
+                    var qingMark = data.data.qingMark;
+                    if (qingMark) {
+                        templateService.removeTextTemplate(qingMark);
+                    }
+                }}
+        });
+    }])
+    .directive("textEditorDesign", ["templateService", "guid",
+        function (templateService, guid) {
             var defaultText = "You can input any thing in there.";
-            pluginsService.register("text-editor-design", {
-                "title": "text editor",
-                "description": "",
-                "type": pluginType.CONTAINER,
-                "events": {
-                    "remove": function (data) {
-                        var qingMark = data.data.qingMark;
-                        if (qingMark) {
-                            templateService.removeTextTemplate(qingMark);
-                        }
-                    }}
-            });
-
             return {
                 restrict: 'EA',
                 replace: true,

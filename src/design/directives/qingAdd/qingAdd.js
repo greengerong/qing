@@ -3,17 +3,17 @@
 angular.module("qing")
     .filter('pluginType',function(){
         return function(pluginList,pluginType){
-            var plugins = [];
-            angular.forEach(pluginList,function(plugin){
+            var plugins = {};
+            angular.forEach(pluginList,function(plugin,pluginName){
                 if(plugin.type.toLocaleLowerCase() == pluginType){
-                    plugins.push(plugin);
+                    plugins[pluginName] = plugin;
                 }
             });
             return plugins;
         }
     })
-    .directive("qingAdd", ["$compile", "templateService", "pluginModalService", "$timeout",
-        function ($compile, templateService, pluginModalService, $timeout) {
+    .directive("qingAdd", ["$compile", "templateService", "pluginModalService", "pluginsService",
+        function ($compile, templateService, pluginModalService, pluginsService) {
             return {
                 templateUrl: "design/directives/qingAdd/qingAdd.html",
                 restrict: "EA",
@@ -33,15 +33,8 @@ angular.module("qing")
                         $scope.addOpen = !$scope.addOpen;
                     };
 
-                    // from service .... 暂时还没有注册组件 先测试
-                    $scope.pluginList = [
-                        {
-                            name:'row-container',
-                            title:'Row',
-                            icon:'glyphicon-th',
-                            type:'container'
-                        }
-                    ]
+                    $scope.pluginList = pluginsService.getAllPlugins();
+                    console.log($scope.pluginList);
 
                     $scope.showSubList = function (type){
                         $scope.subListOpen = $scope.subListOpen == type ? '' : type;
