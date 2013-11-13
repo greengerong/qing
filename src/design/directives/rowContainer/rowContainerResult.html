@@ -1,7 +1,7 @@
 <div class="row row-container" >
     <% _.each(column,function(col){ %>
     <div class="col-md-<%= col.value %>">
-        <qing-panel qing-mark="<%= guid.newId() %>"></qing-panel>
+        <qing-panel qing-mark="<%= guid.newId() %>" vm="vm"></qing-panel>
     </div>
     <% });%>
 </div>

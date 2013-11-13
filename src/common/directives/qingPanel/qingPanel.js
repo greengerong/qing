@@ -11,6 +11,7 @@ qing.qingPanelDirective = function (phase) {
                     restrict: "EA",
                     replace: true,
                     scope: {
+                        vm: "="
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
@@ -23,5 +24,5 @@ qing.qingPanelDirective = function (phase) {
 
                     }
                 };
-    }]);
+            }]);
 }

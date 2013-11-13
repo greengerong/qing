@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-09 */
+/*! qing - v0.0.0 - 2013-11-13 */
 //TODO: should can be add by each design directive; Maybe use window Array
 angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular"])
     .constant('panelConfig', {
@@ -17,6 +17,7 @@ qing.qingPanelDirective = function (phase) {
                     restrict: "EA",
                     replace: true,
                     scope: {
+                        vm: "="
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
@@ -29,7 +30,7 @@ qing.qingPanelDirective = function (phase) {
 
                     }
                 };
-    }]);
+            }]);
 }
 
 angular.module("qing")
@@ -45,8 +46,7 @@ angular.module("qing")
 
             return {
                 restrict: "EA",
-                scope: {
-                },
+                scope: true,
                 link: function (scope, element, attrs) {
                     scope.qingMark = attrs.qingMark;
                     $http.get(tplUrl, {cache: $templateCache})
@@ -66,6 +66,9 @@ angular.module("qing")
                     self.getRootQingMark = function () {
                         return $scope.qingMark;
                     };
+
+                    //ajax to get the data from server,the url config on qing-root-panel.
+                    $scope.vm = {};
                 }]
             };
         }]);
@@ -273,7 +276,7 @@ angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
     "<form>\n" +
-    "    <qing-panel qing-mark=\"{{qingMark}}\"></qing-panel>\n" +
+    "    <qing-panel qing-mark=\"{{qingMark}}\" vm=\"vm\"></qing-panel>\n" +
     "</form>");
 }]);
 

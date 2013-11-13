@@ -13,8 +13,7 @@ angular.module("qing")
 
             return {
                 restrict: "EA",
-                scope: {
-                },
+                scope: true,
                 link: function (scope, element, attrs) {
                     scope.qingMark = attrs.qingMark;
                     $http.get(tplUrl, {cache: $templateCache})
@@ -34,6 +33,9 @@ angular.module("qing")
                     self.getRootQingMark = function () {
                         return $scope.qingMark;
                     };
+
+                    //ajax to get the data from server,the url config on qing-root-panel.
+                    $scope.vm = {};
                 }]
             };
         }]);
