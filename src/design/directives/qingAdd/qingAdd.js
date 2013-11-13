@@ -1,8 +1,19 @@
 'use strict';
 
 angular.module("qing")
-    .directive("qingAdd", ["$compile", "templateService", "pluginModalService",
-        function ($compile, templateService, pluginModalService) {
+    .filter('pluginType',function(){
+        return function(pluginList,pluginType){
+            var plugins = [];
+            angular.forEach(pluginList,function(plugin){
+                if(plugin.type.toLocaleLowerCase() == pluginType){
+                    plugins.push(plugin);
+                }
+            });
+            return plugins;
+        }
+    })
+    .directive("qingAdd", ["$compile", "templateService", "pluginModalService", "$timeout",
+        function ($compile, templateService, pluginModalService, $timeout) {
             return {
                 templateUrl: "design/directives/qingAdd/qingAdd.html",
                 restrict: "EA",
@@ -11,7 +22,6 @@ angular.module("qing")
                 },
                 link: function (scope, element, attrs) {
                     scope.designCallBack = function (pluginName, html) {
-                        //compile on qing-panel scope;
                         $compile(html)(scope.$parent).insertBefore(element);
                         templateService.savePanelTemplate(scope.qingMark, html);
                     };
@@ -23,15 +33,23 @@ angular.module("qing")
                         $scope.addOpen = !$scope.addOpen;
                     };
 
-                    $scope.addCont = function () {
-                        $scope.addOpen = false;
-                    };
+                    // from service .... 暂时还没有注册组件 先测试
+                    $scope.pluginList = [
+                        {
+                            name:'row-container',
+                            title:'Row',
+                            icon:'glyphicon-th',
+                            type:'container'
+                        }
+                    ]
+
+                    $scope.showSubList = function (type){
+                        $scope.subListOpen = $scope.subListOpen == type ? '' : type;
+                    }
 
                     $scope.addContModal = function (pluginName) {
-                        $scope.addOpen = false;
                         pluginModalService.showDesignModal(pluginName)
                             .then(function (result) {
-                                //OK
                                 $scope.designCallBack(pluginName, result);
                             }, function () {
                                 //Cancel

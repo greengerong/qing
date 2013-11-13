@@ -1,14 +1,32 @@
 <div class="qing-add" ng-class="{'open' : addOpen}">
-    <div class="add-list">
-        <ul>
-            <li><a ng-click="addContModal('row-container');"><i class="glyphicon glyphicon-th"></i>Container</a></li>
-            <li><a ng-click="addContModal('text-editor-design');"><i class="glyphicon glyphicon-th"></i>Text Editor</a>
-            </li>
-            <li><a><i class="glyphicon glyphicon-list-alt"></i>Conponment</a></li>
-        </ul>
-    </div>
     <a class="btn btn-default" ng-click="toggleOpen()">
         <i class="glyphicon glyphicon-plus" ng-hide="addOpen"></i>
         <i class="glyphicon glyphicon-chevron-down" ng-show="addOpen"></i>
     </a>
+    <div class="add-list">
+        <ul>
+            <li>
+                <!--<a ng-click="addContModal('row-container');"><i class="glyphicon glyphicon-th"></i>Container</a>-->
+                <a ng-click="showSubList('container')"><i class="glyphicon glyphicon-th"></i>Container</a>
+            </li>
+            <li>
+                <a ng-click="showSubList('conponment')"><i class="glyphicon glyphicon-list-alt"></i>Conponment</a>
+            </li>
+        </ul>
+        <!--如果以后有更多组件类型 再做动态compile-->
+        <div class="sub-add-list" ng-class="{'active' : subListOpen == 'container'}">
+            <ul>
+                <li ng-repeat="plugin in pluginList | pluginType : 'container' ">
+                    <a ng-click="addContModal(plugin.name);"><i class="glyphicon {{plugin.icon}}"></i>{{plugin.title}}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="sub-add-list" ng-class="{'active': subListOpen == 'conponment'}">
+            <ul>
+                <li ng-repeat="plugin in pluginList | pluginType : 'conponment' ">
+                    <a ng-click="addContModal('{{ plugin.name }}');"><i class="glyphicon {{plugin.icon}}"></i>{{plugin.title}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>

@@ -4,4 +4,6 @@ dist
 .sass-cache
 app/bower_components
 demo/node_modules
+demo/public
 .DS_Store
+

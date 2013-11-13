@@ -3,6 +3,7 @@
   position:relative;
   .btn{
     display: block;
+    padding:2px 12px;
     &:hover{
       border-color:#ccc;
       background-color:#f3f3f3;
@@ -19,13 +20,13 @@
     transform:translate(0,-40px);
     transition: all .4s ease;
     opacity: 0;
-    display: none;
     text-transform: uppercase;
+    pointer-events: none;
     ul{
       margin:0 15px;
       text-align:center;
-      height:44px;
-      padding:8px 0 8px;
+      height:34px;
+      padding:3px 0 8px;
       border-top:1px #ccc dashed;
       overflow: hidden;
     }
@@ -43,11 +44,25 @@
       margin-right:3px;
     }
   }
+  .sub-add-list{
+    opacity: 0;
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    border: 1px solid #ccc;
+    border-radius:0 0 5px 5px;
+    background-color:#f3f3f3;
+    border-top:0 none;
+    transition: all .5s ease;
+    &.active{
+      opacity: 1;
+    }
+  }
   &.open {
     .add-list{
       transform:translate(0,0);
       opacity:1;
-      display:block;
+      pointer-events: auto;
     }
     .btn{
       border-bottom-left-radius:0;
