@@ -27,6 +27,11 @@ angular.module("qing")
                     };
                 },
                 controller: ["$scope", function ($scope) {
+                    var closeNav = function(){
+                        $scope.addOpen = false;
+                        $scope.subListOpen = '';
+                    }
+
                     $scope.addOpen = false;
 
                     $scope.toggleOpen = function () {
@@ -34,7 +39,6 @@ angular.module("qing")
                     };
 
                     $scope.pluginList = pluginsService.getAllPlugins();
-                    console.log($scope.pluginList);
 
                     $scope.showSubList = function (type){
                         $scope.subListOpen = $scope.subListOpen == type ? '' : type;
@@ -44,6 +48,7 @@ angular.module("qing")
                         pluginModalService.showDesignModal(pluginName)
                             .then(function (result) {
                                 $scope.designCallBack(pluginName, result);
+                                closeNav();
                             }, function () {
                                 //Cancel
                             });
