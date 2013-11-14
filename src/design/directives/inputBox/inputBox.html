@@ -1,0 +1,32 @@
+<div class="form-horizontal">
+    <pre>{{config | json}}</pre>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">model name</label>
+
+        <div class="col-sm-10">
+            <input type="text" class="form-control" ng-model="config.modelName" ng-required="true">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="inputBoxType" class="col-sm-2 control-label">Type</label>
+        placeholder
+        <div class="col-sm-10">
+            <select ui-select2 ng-model="config.boxType" class="input-box-type" id="inputBoxType"
+                    data-placeholder="Input box type">
+                <option ng-repeat="type in inputBoxConfig.types" value="{{type.value}}">{{type.text}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" ng-model="config.required" ng-true-value="true" ng-false-value="false">
+                        Required?
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

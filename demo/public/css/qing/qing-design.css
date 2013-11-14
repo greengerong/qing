@@ -5917,11 +5917,16 @@ td.visible-print {
 .qing-panel {
   border: 1px dashed #cccccc;
   min-height: 150px;
+  padding: 2px;
   margin-bottom: 2px;
+  box-sizing: border-box;
   position: relative;
 }
 。text-editor {
   line-height: 20px;
+}
+.input-box-type {
+  width: 80%;
 }
 .design-tool-bar {
   position: absolute;
@@ -5939,7 +5944,7 @@ td.visible-print {
   cursor: pointer;
 }
 .tool-bar-hight-light {
-  border: 1px dashed #ff0000 !important;
+  box-shadow: 0px 0px 1px #f00;
 }
 .qing-add {
   margin: 2px;
@@ -5947,6 +5952,7 @@ td.visible-print {
 }
 .qing-add .btn {
   display: block;
+  padding: 2px 12px;
 }
 .qing-add .btn:hover {
   border-color: #ccc;
@@ -5963,34 +5969,65 @@ td.visible-print {
   transform: translate(0, -40px);
   transition: all .4s ease;
   opacity: 0;
-  display: none;
   text-transform: uppercase;
+  pointer-events: none;
 }
 .qing-add .add-list ul {
   margin: 0 15px;
   text-align: center;
-  height: 44px;
-  padding: 8px 0 8px;
+  height: 34px;
   border-top: 1px #ccc dashed;
   overflow: hidden;
 }
 .qing-add .add-list li {
   list-style: none;
+  height: 28px;
+  line-height: 28px;
+  overflow: hidden;
   display: inline-block;
-  margin: 0 10px;
+  padding: 0 10px;
+  margin-top: 2px;
+  box-sizing: content-box;
+  border-radius: 3px;
 }
 .qing-add .add-list li a {
   text-decoration: none;
   cursor: pointer;
+  display: block;
+  color: #3f5167;
+}
+.qing-add .add-list li.cur {
+  background-color: #60cdb5;
+}
+.qing-add .add-list li.cur a {
+  color: #fff;
 }
 .qing-add .add-list .glyphicon {
   font-size: 20px;
   margin-right: 3px;
 }
+.qing-add .sub-add-list {
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  border: 1px solid #ccc;
+  border-radius: 0 0 5px 5px;
+  background-color: #f3f3f3;
+  border-top: 0 none;
+  transition: all .5s ease;
+  display: none;
+  font-size: 12px;
+}
+.qing-add .sub-add-list.active {
+  display: block;
+}
+.qing-add .sub-add-list .glyphicon {
+  font-size: 16px;
+}
 .qing-add.open .add-list {
   transform: translate(0, 0);
   opacity: 1;
-  display: block;
+  pointer-events: auto;
 }
 .qing-add.open .btn {
   border-bottom-left-radius: 0;

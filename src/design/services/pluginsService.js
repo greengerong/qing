@@ -3,9 +3,9 @@
 angular.module("qing").constant("pluginsConfig", {})
     .factory("pluginType", function () {
         return {
-            "CONTROL": "control",
+            "COMPONENT": "component",
             "CONTAINER": "container",
-            "values": ["control", "container"]
+            "values": ["component", "container"]
         };
     })
     .service("pluginsService", ["pluginsConfig", "$log", "pluginType",

@@ -1,5 +1,10 @@
-/*! qing - v0.0.0 - 2013-11-13 */
-angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular" ,"ui"])
+/*! qing - v0.0.0 - 2013-11-14 */
+angular.module("qing", ["qing.template",
+        "ui.bootstrap",
+        "ngmodel.format",
+        "green.inputmask4angular" ,
+        "ui",
+        "ui.select2"])
     .constant("gridConfig", {
         "totalColumn": 12
     });
@@ -134,7 +139,7 @@ angular.module("qing")
 
         self.confirm = function (options) {
             var modalInstance = $modal.open({
-                templateUrl: "common/services/messageBox/messageBox.html",
+                templateUrl: "common/services/messagebox/messagebox.html",
                 controller: [ "$scope", "$modalInstance",
                     function ($scope, $modalInstance) {
                         $scope.options = options;
@@ -250,6 +255,65 @@ String.format = function () {
     return s;
 };
 angular.module("qing")
+    .run(["pluginsService", "pluginType", "templateService", function (pluginsService, pluginType) {
+        pluginsService.register("input-box", {
+            "title": "Input box",
+            "description": "",
+            "type": pluginType.COMPONENT,
+            "events": { }
+        });
+    }])
+    .constant("inputBoxConfig", {
+        types: [
+            {
+                text: "default text box",
+                value: "default"
+            },
+            {
+                text: "email box",
+                value: "email"
+            },
+            {
+                text: "currency box",
+                value: "currency"
+            }
+        ]
+    })
+    .directive("inputBox", ["templateService", "inputBoxConfig", "underscoreService",
+        function (templateService, inputBoxConfig, underscoreService) {
+
+            return {
+                restrict: 'EA',
+                templateUrl: "design/directives/inputBox/inputBox.html",
+                replace: true,
+                link: function (scope, element, attrs) {
+                    scope.inputBoxConfig = inputBoxConfig;
+                    scope.config = scope.config || {
+                        boxType: "default"
+                    };
+                    scope.getResult = function () {
+                        var type = underscoreService.findWhere(scope.inputBoxConfig.types, function (item) {
+                            return item.value === scope.config.boxType;
+                        })
+                        return {
+                            tpl: {
+                                url: "design/directives/inputBox/inputBoxResult.html",
+                                data: {
+//                                    mask:type.getOption()
+                                    config: scope.config
+                                }
+                            },
+                            data: {
+                                "key": "config",
+                                "data": scope.config
+                            }
+                        };
+                    };
+                }
+            }
+        }]);
+
+angular.module("qing")
     .directive("qingPlugin", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService",
         "templateService", "messageBox", "pluginsService",
         function ($http, $compile, $templateCache, $timeout, pluginModalService, templateService, messageBox, pluginsService) {
@@ -335,8 +399,19 @@ angular.module("qing")
     ]);
 
 angular.module("qing")
-    .directive("qingAdd", ["$compile", "templateService", "pluginModalService",
-        function ($compile, templateService, pluginModalService) {
+    .filter('pluginType',function(){
+        return function(pluginList,pluginType){
+            var plugins = {};
+            angular.forEach(pluginList,function(plugin,pluginName){
+                if(plugin.type.toLocaleLowerCase() == pluginType){
+                    plugins[pluginName] = plugin;
+                }
+            });
+            return plugins;
+        }
+    })
+    .directive("qingAdd", ["$compile", "templateService", "pluginModalService", "pluginsService",
+        function ($compile, templateService, pluginModalService, pluginsService) {
             return {
                 templateUrl: "design/directives/qingAdd/qingAdd.html",
                 restrict: "EA",
@@ -345,28 +420,33 @@ angular.module("qing")
                 },
                 link: function (scope, element, attrs) {
                     scope.designCallBack = function (pluginName, html) {
-                        //compile on qing-panel scope;
                         $compile(html)(scope.$parent).insertBefore(element);
                         templateService.savePanelTemplate(scope.qingMark, html);
                     };
                 },
                 controller: ["$scope", function ($scope) {
+                    var closeNav = function(){
+                        $scope.addOpen = false;
+                        $scope.subListOpen = '';
+                    }
+
                     $scope.addOpen = false;
 
                     $scope.toggleOpen = function () {
                         $scope.addOpen = !$scope.addOpen;
                     };
 
-                    $scope.addCont = function () {
-                        $scope.addOpen = false;
-                    };
+                    $scope.pluginList = pluginsService.getAllPlugins();
+
+                    $scope.showSubList = function (type){
+                        $scope.subListOpen = $scope.subListOpen == type ? '' : type;
+                    }
 
                     $scope.addContModal = function (pluginName) {
-                        $scope.addOpen = false;
                         pluginModalService.showDesignModal(pluginName)
                             .then(function (result) {
-                                //OK
                                 $scope.designCallBack(pluginName, result);
+                                closeNav();
                             }, function () {
                                 //Cancel
                             });
@@ -379,14 +459,17 @@ angular.module("qing")
 var qing = qing || {};
 qing.qingPanelDirective("design");
 angular.module('qing')
-    .directive('rowContainer', ["$compile", "gridConfig", "guid", "pluginsService", "pluginType",
-        function ($compile, gridConfig, guid, pluginsService, pluginType) {
-            pluginsService.register("row-container", {
-                "title": "row container",
-                "description": "",
-                "type": pluginType.CONTAINER
-            });
-
+    .run(["pluginsService","pluginType",function(pluginsService,pluginType){
+        console.log("pluginsService");
+        pluginsService.register("row-container", {
+            "title": "row container",
+            "description": "",
+            "icon" : "glyphicon-th-list",
+            "type": pluginType.CONTAINER
+        });
+    }])
+    .directive('rowContainer', ["$compile", "gridConfig", "guid",
+        function ($compile, gridConfig, guid) {
             return {
                 templateUrl: 'design/directives/rowContainer/rowContainer.html',
                 restrict: 'EA',
@@ -503,22 +586,25 @@ angular.module("qing")
 ;
 
 angular.module("qing")
-    .directive("textEditorDesign", ["pluginsService", "pluginType", "templateService", "guid",
-        function (pluginsService, pluginType, templateService, guid) {
+    .run(["pluginsService","pluginType","templateService",function(pluginsService,pluginType,templateService){
+        console.log("pluginsService");
+        pluginsService.register("text-editor-design", {
+            "title": "text editor",
+            "description": "",
+            "type": pluginType.CONTAINER,
+            "icon":"glyphicon-text-width",
+            "events": {
+                "remove": function (data) {
+                    var qingMark = data.data.qingMark;
+                    if (qingMark) {
+                        templateService.removeTextTemplate(qingMark);
+                    }
+                }}
+        });
+    }])
+    .directive("textEditorDesign", ["templateService", "guid",
+        function (templateService, guid) {
             var defaultText = "You can input any thing in there.";
-            pluginsService.register("text-editor-design", {
-                "title": "text editor",
-                "description": "",
-                "type": pluginType.CONTAINER,
-                "events": {
-                    "remove": function (data) {
-                        var qingMark = data.data.qingMark;
-                        if (qingMark) {
-                            templateService.removeTextTemplate(qingMark);
-                        }
-                    }}
-            });
-
             return {
                 restrict: 'EA',
                 replace: true,
@@ -656,9 +742,9 @@ angular.module("qing")
 angular.module("qing").constant("pluginsConfig", {})
     .factory("pluginType", function () {
         return {
-            "CONTROL": "control",
+            "COMPONENT": "component",
             "CONTAINER": "container",
-            "values": ["control", "container"]
+            "values": ["component", "container"]
         };
     })
     .service("pluginsService", ["pluginsConfig", "$log", "pluginType",
@@ -694,11 +780,11 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
-    "<form>\n" +
+    "<form class=\"form-horizontal\">\n" +
     "    <qing-panel qing-mark=\"{{qingMark}}\" vm=\"vm\"></qing-panel>\n" +
     "</form>");
 }]);
@@ -720,6 +806,53 @@ angular.module("common/services/messageBox/messageBox.html", []).run(["$template
     "</div>");
 }]);
 
+angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/inputBox/inputBox.html",
+    "<div class=\"form-horizontal\">\n" +
+    "    <pre>{{config | json}}</pre>\n" +
+    "    <div class=\"form-group\">\n" +
+    "        <label class=\"col-sm-2 control-label\">model name</label>\n" +
+    "\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <input type=\"text\" class=\"form-control\" ng-model=\"config.modelName\" ng-required=\"true\">\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"form-group\">\n" +
+    "        <label for=\"inputBoxType\" class=\"col-sm-2 control-label\">Type</label>\n" +
+    "        placeholder\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <select ui-select2 ng-model=\"config.boxType\" class=\"input-box-type\" id=\"inputBoxType\"\n" +
+    "                    data-placeholder=\"Input box type\">\n" +
+    "                <option ng-repeat=\"type in inputBoxConfig.types\" value=\"{{type.value}}\">{{type.text}}</option>\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"form-group\">\n" +
+    "            <div class=\"col-sm-offset-2 col-sm-10\">\n" +
+    "                <div class=\"checkbox\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"checkbox\" ng-model=\"config.required\" ng-true-value=\"true\" ng-false-value=\"false\">\n" +
+    "                        Required?\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/inputBox/inputBoxResult.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/inputBox/inputBoxResult.html",
+    "<div class=\"form-group\">\n" +
+    "    <label class=\"col-sm-2 control-label\"><%= \"label\"%></label>\n" +
+    "\n" +
+    "    <div class=\"col-sm-10\">\n" +
+    "        <input type=\"text\" class=\"form-control\" ng-model=\"<%= config.modelName%>\">\n" +
+    "    </div>\n" +
+    "</div>");
+}]);
+
 angular.module("design/directives/pluginName/qingPlugin.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/pluginName/qingPlugin.html",
     "<div class=\"qing-container\">\n" +
@@ -735,18 +868,36 @@ angular.module("design/directives/pluginName/qingPlugin.html", []).run(["$templa
 angular.module("design/directives/qingAdd/qingAdd.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/qingAdd/qingAdd.html",
     "<div class=\"qing-add\" ng-class=\"{'open' : addOpen}\">\n" +
-    "    <div class=\"add-list\">\n" +
-    "        <ul>\n" +
-    "            <li><a ng-click=\"addContModal('row-container');\"><i class=\"glyphicon glyphicon-th\"></i>Container</a></li>\n" +
-    "            <li><a ng-click=\"addContModal('text-editor-design');\"><i class=\"glyphicon glyphicon-th\"></i>Text Editor</a>\n" +
-    "            </li>\n" +
-    "            <li><a><i class=\"glyphicon glyphicon-list-alt\"></i>Conponment</a></li>\n" +
-    "        </ul>\n" +
-    "    </div>\n" +
     "    <a class=\"btn btn-default\" ng-click=\"toggleOpen()\">\n" +
     "        <i class=\"glyphicon glyphicon-plus\" ng-hide=\"addOpen\"></i>\n" +
     "        <i class=\"glyphicon glyphicon-chevron-down\" ng-show=\"addOpen\"></i>\n" +
     "    </a>\n" +
+    "    <div class=\"add-list\">\n" +
+    "        <ul>\n" +
+    "            <li ng-class=\"{'cur' : subListOpen == 'container'}\">\n" +
+    "                <!--<a ng-click=\"addContModal('row-container');\"><i class=\"glyphicon glyphicon-th\"></i>Container</a>-->\n" +
+    "                <a ng-click=\"showSubList('container')\"><i class=\"glyphicon glyphicon-th\"></i>Container</a>\n" +
+    "            </li>\n" +
+    "            <li ng-class=\"{'cur': subListOpen == 'component'}\">\n" +
+    "                <a ng-click=\"showSubList('component')\"><i class=\"glyphicon glyphicon-list-alt\"></i>Component</a>\n" +
+    "            </li>\n" +
+    "        </ul>\n" +
+    "        <!--如果以后有更多组件类型 再做动态compile-->\n" +
+    "        <div class=\"sub-add-list\" ng-class=\"{'active' : subListOpen == 'container'}\">\n" +
+    "            <ul>\n" +
+    "                <li ng-repeat=\"(pluginName, plugin) in pluginList | pluginType : 'container' \">\n" +
+    "                    <a ng-click=\"addContModal(pluginName);\"><i class=\"glyphicon {{plugin.icon}}\"></i>{{plugin.title}}</a>\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "        <div class=\"sub-add-list\" ng-class=\"{'active': subListOpen == 'component'}\">\n" +
+    "            <ul>\n" +
+    "                <li ng-repeat=\"(pluginName, plugin) in pluginList | pluginType : 'component' \">\n" +
+    "                    <a ng-click=\"addContModal(pluginName);\"><i class=\"glyphicon {{plugin.icon}}\"></i>{{plugin.title}}</a>\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>");
 }]);
 

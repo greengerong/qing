@@ -9,8 +9,8 @@
                 <!--<a ng-click="addContModal('row-container');"><i class="glyphicon glyphicon-th"></i>Container</a>-->
                 <a ng-click="showSubList('container')"><i class="glyphicon glyphicon-th"></i>Container</a>
             </li>
-            <li ng-class="{'cur': subListOpen == 'conponment'}">
-                <a ng-click="showSubList('conponment')"><i class="glyphicon glyphicon-list-alt"></i>Conponment</a>
+            <li ng-class="{'cur': subListOpen == 'component'}">
+                <a ng-click="showSubList('component')"><i class="glyphicon glyphicon-list-alt"></i>Component</a>
             </li>
         </ul>
         <!--如果以后有更多组件类型 再做动态compile-->
@@ -21,9 +21,9 @@
                 </li>
             </ul>
         </div>
-        <div class="sub-add-list" ng-class="{'active': subListOpen == 'conponment'}">
+        <div class="sub-add-list" ng-class="{'active': subListOpen == 'component'}">
             <ul>
-                <li ng-repeat="(pluginName, plugin) in pluginList | pluginType : 'conponment' ">
+                <li ng-repeat="(pluginName, plugin) in pluginList | pluginType : 'component' ">
                     <a ng-click="addContModal(pluginName);"><i class="glyphicon {{plugin.icon}}"></i>{{plugin.title}}</a>
                 </li>
             </ul>
