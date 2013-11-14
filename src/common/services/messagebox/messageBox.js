@@ -6,7 +6,7 @@ angular.module("qing")
 
         self.confirm = function (options) {
             var modalInstance = $modal.open({
-                templateUrl: "common/services/messageBox/messageBox.html",
+                templateUrl: "common/services/messagebox/messagebox.html",
                 controller: [ "$scope", "$modalInstance",
                     function ($scope, $modalInstance) {
                         $scope.options = options;
