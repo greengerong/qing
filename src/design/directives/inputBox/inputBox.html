@@ -1,20 +1,26 @@
 <div class="md-qing-input-box">
     <pre>{{config | json}}</pre>
-    <div class="form-group">
+    <div class="form-group"
+         ng-class="{'has-error':designForm.modelName.$invalid,'has-success':designForm.modelName.$valid}">
         <label class="col-sm-2 control-label">model name</label>
+
         <div class="col-sm-10">
             <div class="input-group">
                 <span class="input-group-addon">vm.</span>
-                <input type="text" class="form-control" ng-model="config.modelName" ng-required="true">
+                <input type="text" name="modelName" class="form-control" ng-model="config.modelName" ng-required="true"
+                       ng-pattern="/^[a-zA-Z_]+(([a-zA-Z_]\d*)|\.)*$/">
             </div>
-            <!--input-mask="'Regex'" mask-option="modelNameMaskOption"-->
+            <span class="help-block" ng-show="designForm.modelName.$error.required">Model name required.</span>
+            <span class="help-block"
+                  ng-show="designForm.modelName.$error.pattern">Model name should be a valid word.</span>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" ng-class="{'has-error':designForm.label.$invalid,'has-success':designForm.label.$valid}">
         <label class="col-sm-2 control-label">label name</label>
 
         <div class="col-sm-10">
-            <input type="text" class="form-control" ng-model="config.label" ng-required="true">
+            <input type="text" name="label" class="form-control" ng-model="config.label" ng-required="true">
+            <span class="help-block" ng-show="designForm.label.$error.required">Label required.</span>
         </div>
     </div>
     <div class="form-group">

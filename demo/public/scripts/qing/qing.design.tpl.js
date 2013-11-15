@@ -291,10 +291,6 @@ angular.module("qing")
                         boxType: "default"
                     };
 
-                    scope.modelNameMaskOption = {
-                        regex: "[a-zA-Z_]+"
-                    };
-
                     scope.getResult = function () {
                         var type = underscoreService.findWhere(scope.inputBoxConfig.types, function (item) {
                             return item.value === scope.config.boxType;
@@ -818,21 +814,27 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
   $templateCache.put("design/directives/inputBox/inputBox.html",
     "<div class=\"md-qing-input-box\">\n" +
     "    <pre>{{config | json}}</pre>\n" +
-    "    <div class=\"form-group\">\n" +
+    "    <div class=\"form-group\"\n" +
+    "         ng-class=\"{'has-error':designForm.modelName.$invalid,'has-success':designForm.modelName.$valid}\">\n" +
     "        <label class=\"col-sm-2 control-label\">model name</label>\n" +
+    "\n" +
     "        <div class=\"col-sm-10\">\n" +
     "            <div class=\"input-group\">\n" +
     "                <span class=\"input-group-addon\">vm.</span>\n" +
-    "                <input type=\"text\" class=\"form-control\" ng-model=\"config.modelName\" ng-required=\"true\">\n" +
+    "                <input type=\"text\" name=\"modelName\" class=\"form-control\" ng-model=\"config.modelName\" ng-required=\"true\"\n" +
+    "                       ng-pattern=\"/^[a-zA-Z_]+(([a-zA-Z_]\\d*)|\\.)*$/\">\n" +
     "            </div>\n" +
-    "            <!--input-mask=\"'Regex'\" mask-option=\"modelNameMaskOption\"-->\n" +
+    "            <span class=\"help-block\" ng-show=\"designForm.modelName.$error.required\">Model name required.</span>\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  ng-show=\"designForm.modelName.$error.pattern\">Model name should be a valid word.</span>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "    <div class=\"form-group\">\n" +
+    "    <div class=\"form-group\" ng-class=\"{'has-error':designForm.label.$invalid,'has-success':designForm.label.$valid}\">\n" +
     "        <label class=\"col-sm-2 control-label\">label name</label>\n" +
     "\n" +
     "        <div class=\"col-sm-10\">\n" +
-    "            <input type=\"text\" class=\"form-control\" ng-model=\"config.label\" ng-required=\"true\">\n" +
+    "            <input type=\"text\" name=\"label\" class=\"form-control\" ng-model=\"config.label\" ng-required=\"true\">\n" +
+    "            <span class=\"help-block\" ng-show=\"designForm.label.$error.required\">Label required.</span>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"form-group\">\n" +
