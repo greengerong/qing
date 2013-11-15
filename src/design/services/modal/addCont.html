@@ -4,14 +4,4 @@
 
     <p ng-bind="options.description" ng-show="options.description"></p>
 </div>
-<div ng-form="designForm" name="designForm" class="form-horizontal">
-    <div class="modal-body" ng-bind-html-unsafe="contentHtml">
-
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" ng-click="ok()"
-                ng-disabled="designForm.$invalid">&nbsp;OK&nbsp;
-        </button>
-        <!--<button type="button" class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
-    </div>
-</div>
+<div class="modal-body" ng-bind-html-unsafe="contentHtml"></div>

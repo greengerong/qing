@@ -21,7 +21,6 @@ angular.module("qing")
                 });
 
                 if (!$pluginElm.attr("qing-mark")) {
-                    console.log($pluginElm.attr("qing-mark"), "in qing-mark")
                     $pluginElm.attr({ "qing-mark": guid.newId()});
                 }
 
@@ -41,22 +40,27 @@ angular.module("qing")
             self.showDesignModal = function (pluginName, pluginData) {
                 var modalInstance = $modal.open({
                     templateUrl: "design/services/modal/addCont.html",
-                    controller: [ "$scope", "$modalInstance" , "pluginDesigner", "$compile",
-                        function ($scope, $modalInstance, pluginDesigner, $compile) {
+                    controller: [ "$scope", "$modalInstance" , "pluginDesigner", "$compile", "$templateCache", "$http",
+                        function ($scope, $modalInstance, pluginDesigner, $compile, $templateCache, $http) {
                             var pluginScope = $scope.$new();
                             if (pluginDesigner.pluginData) {
                                 pluginScope[pluginDesigner.pluginData.key] = pluginDesigner.pluginData.data;
                             }
-                            $scope.contentHtml = $compile(pluginDesigner.plugin)(pluginScope);
+
+                            var pluginHtml = angular.element(pluginDesigner.plugin)[0].outerHTML;
+                            var contentTplUrl = "design/services/modal/modalBody.html";
+                            var $modalBody = underscoreService.template($templateCache.get(contentTplUrl), {contentHtml: pluginHtml});
+
+                            $scope.contentHtml = $compile($modalBody)(pluginScope);
                             $scope.options = pluginsService.getPlugin(pluginName);
-                            $scope.ok = function () {
+                            pluginScope.ok = function () {
                                 var result = pluginScope.getResult && angular.isFunction(pluginScope.getResult)
                                     ? pluginScope.getResult() : null;
                                 pluginScope.$destroy();
                                 $modalInstance.close(result);
                             };
 
-                            $scope.cancel = function () {
+                            pluginScope.cancel = function () {
                                 pluginScope.$destroy();
                                 $modalInstance.dismiss('cancel');
                             };

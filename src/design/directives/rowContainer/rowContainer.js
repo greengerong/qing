@@ -2,7 +2,6 @@
 
 angular.module('qing')
     .run(["pluginsService","pluginType",function(pluginsService,pluginType){
-        console.log("pluginsService");
         pluginsService.register("row-container", {
             "title": "row container",
             "description": "",

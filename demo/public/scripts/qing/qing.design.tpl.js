@@ -25,7 +25,6 @@ qing.qingPanelDirective = function (phase) {
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
-                        console.log(scope, "qing-panel");
                         templateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
                             if (tplContent && (tplContent.trim())) {
                                 element.find(".content").replaceWith($compile(tplContent.trim())(scope));
@@ -425,8 +424,6 @@ angular.module("qing")
                     "qingMark": "="
                 },
                 link: function (scope, element, attrs) {
-                    console.log(scope, scope.$parent, "qing-add");
-
                     scope.designCallBack = function (pluginName, html) {
                         $compile(html)(scope.$parent).insertBefore(element);
                         templateService.savePanelTemplate(scope.qingMark, html);
@@ -468,7 +465,6 @@ var qing = qing || {};
 qing.qingPanelDirective("design");
 angular.module('qing')
     .run(["pluginsService","pluginType",function(pluginsService,pluginType){
-        console.log("pluginsService");
         pluginsService.register("row-container", {
             "title": "row container",
             "description": "",
@@ -594,13 +590,12 @@ angular.module("qing")
 ;
 
 angular.module("qing")
-    .run(["pluginsService","pluginType","templateService",function(pluginsService,pluginType,templateService){
-        console.log("pluginsService");
+    .run(["pluginsService", "pluginType", "templateService", function (pluginsService, pluginType, templateService) {
         pluginsService.register("text-editor-design", {
             "title": "text editor",
             "description": "",
             "type": pluginType.CONTAINER,
-            "icon":"glyphicon-text-width",
+            "icon": "glyphicon-text-width",
             "events": {
                 "remove": function (data) {
                     var qingMark = data.data.qingMark;
@@ -685,7 +680,6 @@ angular.module("qing")
                 });
 
                 if (!$pluginElm.attr("qing-mark")) {
-                    console.log($pluginElm.attr("qing-mark"), "in qing-mark")
                     $pluginElm.attr({ "qing-mark": guid.newId()});
                 }
 
@@ -705,22 +699,27 @@ angular.module("qing")
             self.showDesignModal = function (pluginName, pluginData) {
                 var modalInstance = $modal.open({
                     templateUrl: "design/services/modal/addCont.html",
-                    controller: [ "$scope", "$modalInstance" , "pluginDesigner", "$compile",
-                        function ($scope, $modalInstance, pluginDesigner, $compile) {
+                    controller: [ "$scope", "$modalInstance" , "pluginDesigner", "$compile", "$templateCache", "$http",
+                        function ($scope, $modalInstance, pluginDesigner, $compile, $templateCache, $http) {
                             var pluginScope = $scope.$new();
                             if (pluginDesigner.pluginData) {
                                 pluginScope[pluginDesigner.pluginData.key] = pluginDesigner.pluginData.data;
                             }
-                            $scope.contentHtml = $compile(pluginDesigner.plugin)(pluginScope);
+
+                            var pluginHtml = angular.element(pluginDesigner.plugin)[0].outerHTML;
+                            var contentTplUrl = "design/services/modal/modalBody.html";
+                            var $modalBody = underscoreService.template($templateCache.get(contentTplUrl), {contentHtml: pluginHtml});
+
+                            $scope.contentHtml = $compile($modalBody)(pluginScope);
                             $scope.options = pluginsService.getPlugin(pluginName);
-                            $scope.ok = function () {
+                            pluginScope.ok = function () {
                                 var result = pluginScope.getResult && angular.isFunction(pluginScope.getResult)
                                     ? pluginScope.getResult() : null;
                                 pluginScope.$destroy();
                                 $modalInstance.close(result);
                             };
 
-                            $scope.cancel = function () {
+                            pluginScope.cancel = function () {
                                 pluginScope.$destroy();
                                 $modalInstance.dismiss('cancel');
                             };
@@ -789,7 +788,7 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html', 'design/services/modal/modalBody.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
@@ -984,9 +983,14 @@ angular.module("design/services/modal/addCont.html", []).run(["$templateCache", 
     "\n" +
     "    <p ng-bind=\"options.description\" ng-show=\"options.description\"></p>\n" +
     "</div>\n" +
-    "<div ng-form=\"designForm\" name=\"designForm\" class=\"form-horizontal\">\n" +
-    "    <div class=\"modal-body\" ng-bind-html-unsafe=\"contentHtml\">\n" +
-    "\n" +
+    "<div class=\"modal-body\" ng-bind-html-unsafe=\"contentHtml\"></div>");
+}]);
+
+angular.module("design/services/modal/modalBody.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/services/modal/modalBody.html",
+    "<div ng-form=\"designForm\" name=\"designForm\" novalidate class=\"form-horizontal\">\n" +
+    "    <div class=\"modal-body\">\n" +
+    "                           <%= contentHtml %>\n" +
     "    </div>\n" +
     "    <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-primary\" ng-click=\"ok()\"\n" +

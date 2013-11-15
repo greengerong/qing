@@ -1,11 +1,10 @@
 angular.module("qing")
-    .run(["pluginsService","pluginType","templateService",function(pluginsService,pluginType,templateService){
-        console.log("pluginsService");
+    .run(["pluginsService", "pluginType", "templateService", function (pluginsService, pluginType, templateService) {
         pluginsService.register("text-editor-design", {
             "title": "text editor",
             "description": "",
             "type": pluginType.CONTAINER,
-            "icon":"glyphicon-text-width",
+            "icon": "glyphicon-text-width",
             "events": {
                 "remove": function (data) {
                     var qingMark = data.data.qingMark;

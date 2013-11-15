@@ -1,0 +1,11 @@
+<div ng-form="designForm" name="designForm" novalidate class="form-horizontal">
+    <div class="modal-body">
+                           <%= contentHtml %>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="ok()"
+                ng-disabled="designForm.$invalid">&nbsp;OK&nbsp;
+        </button>
+        <!--<button type="button" class="btn btn-warning" ng-click="cancel()">Cancel</button>-->
+    </div>
+</div>

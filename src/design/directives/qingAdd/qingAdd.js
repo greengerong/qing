@@ -21,8 +21,6 @@ angular.module("qing")
                     "qingMark": "="
                 },
                 link: function (scope, element, attrs) {
-                    console.log(scope, scope.$parent, "qing-add");
-
                     scope.designCallBack = function (pluginName, html) {
                         $compile(html)(scope.$parent).insertBefore(element);
                         templateService.savePanelTemplate(scope.qingMark, html);
