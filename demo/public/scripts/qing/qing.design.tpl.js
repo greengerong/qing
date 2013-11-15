@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-14 */
+/*! qing - v0.0.0 - 2013-11-15 */
 angular.module("qing", ["qing.template",
         "ui.bootstrap",
         "ngmodel.format",
@@ -25,7 +25,7 @@ qing.qingPanelDirective = function (phase) {
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
-
+                        console.log(scope, "qing-panel");
                         templateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
                             if (tplContent && (tplContent.trim())) {
                                 element.find(".content").replaceWith($compile(tplContent.trim())(scope));
@@ -139,7 +139,7 @@ angular.module("qing")
 
         self.confirm = function (options) {
             var modalInstance = $modal.open({
-                templateUrl: "common/services/messagebox/messagebox.html",
+                templateUrl: "common/services/messageBox/messageBox.html",
                 controller: [ "$scope", "$modalInstance",
                     function ($scope, $modalInstance) {
                         $scope.options = options;
@@ -291,10 +291,15 @@ angular.module("qing")
                     scope.config = scope.config || {
                         boxType: "default"
                     };
+
+                    scope.modelNameMaskOption = {
+                        regex: "[a-zA-Z_]+"
+                    };
+
                     scope.getResult = function () {
                         var type = underscoreService.findWhere(scope.inputBoxConfig.types, function (item) {
                             return item.value === scope.config.boxType;
-                        })
+                        });
                         return {
                             tpl: {
                                 url: "design/directives/inputBox/inputBoxResult.html",
@@ -323,6 +328,7 @@ angular.module("qing")
             return {
                 restrict: "EA",
                 scope: {
+                    vm: "="
                 },
                 link: function (scope, element, attrs) {
                     scope.qingMark = attrs.qingMark;
@@ -399,11 +405,11 @@ angular.module("qing")
     ]);
 
 angular.module("qing")
-    .filter('pluginType',function(){
-        return function(pluginList,pluginType){
+    .filter('pluginType', function () {
+        return function (pluginList, pluginType) {
             var plugins = {};
-            angular.forEach(pluginList,function(plugin,pluginName){
-                if(plugin.type.toLocaleLowerCase() == pluginType){
+            angular.forEach(pluginList, function (plugin, pluginName) {
+                if (plugin.type.toLocaleLowerCase() == pluginType) {
                     plugins[pluginName] = plugin;
                 }
             });
@@ -419,13 +425,15 @@ angular.module("qing")
                     "qingMark": "="
                 },
                 link: function (scope, element, attrs) {
+                    console.log(scope, scope.$parent, "qing-add");
+
                     scope.designCallBack = function (pluginName, html) {
                         $compile(html)(scope.$parent).insertBefore(element);
                         templateService.savePanelTemplate(scope.qingMark, html);
                     };
                 },
                 controller: ["$scope", function ($scope) {
-                    var closeNav = function(){
+                    var closeNav = function () {
                         $scope.addOpen = false;
                         $scope.subListOpen = '';
                     }
@@ -438,9 +446,9 @@ angular.module("qing")
 
                     $scope.pluginList = pluginsService.getAllPlugins();
 
-                    $scope.showSubList = function (type){
+                    $scope.showSubList = function (type) {
                         $scope.subListOpen = $scope.subListOpen == type ? '' : type;
-                    }
+                    };
 
                     $scope.addContModal = function (pluginName) {
                         pluginModalService.showDesignModal(pluginName)
@@ -672,7 +680,8 @@ angular.module("qing")
                 $pluginElm.attr({
                     "plugin-data": angular.toJson(result.data),
                     "qing-plugin": pluginName,
-                    "parent-qing-mark": "qing-mark"
+                    "parent-qing-mark": "qing-mark",
+                    "vm": "vm"
                 });
 
                 if (!$pluginElm.attr("qing-mark")) {
@@ -808,34 +817,35 @@ angular.module("common/services/messageBox/messageBox.html", []).run(["$template
 
 angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/inputBox/inputBox.html",
-    "<div class=\"form-horizontal\">\n" +
+    "<div class=\"md-qing-input-box\">\n" +
     "    <pre>{{config | json}}</pre>\n" +
     "    <div class=\"form-group\">\n" +
     "        <label class=\"col-sm-2 control-label\">model name</label>\n" +
-    "\n" +
-    "        <div class=\"col-sm-10\">\n" +
-    "            <input type=\"text\" class=\"form-control\" ng-model=\"config.modelName\" ng-required=\"true\">\n" +
+    "        <div class=\"col-sm-10\">                                                        input-mask=\"'Regex'\" mask-option=\"modelNameMaskOption\"\n" +
+    "            <span>vm.</span><input type=\"text\" class=\"form-control\"  ng-model=\"config.modelName\" ng-required=\"true\">\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "\n" +
+    "    <div class=\"form-group\">\n" +
+    "        <label class=\"col-sm-2 control-label\">label name</label>\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <input type=\"text\" class=\"form-control\" ng-model=\"config.label\" ng-required=\"true\">\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "    <div class=\"form-group\">\n" +
     "        <label for=\"inputBoxType\" class=\"col-sm-2 control-label\">Type</label>\n" +
-    "        placeholder\n" +
     "        <div class=\"col-sm-10\">\n" +
     "            <select ui-select2 ng-model=\"config.boxType\" class=\"input-box-type\" id=\"inputBoxType\"\n" +
     "                    data-placeholder=\"Input box type\">\n" +
     "                <option ng-repeat=\"type in inputBoxConfig.types\" value=\"{{type.value}}\">{{type.text}}</option>\n" +
     "            </select>\n" +
     "        </div>\n" +
-    "\n" +
-    "        <div class=\"form-group\">\n" +
-    "            <div class=\"col-sm-offset-2 col-sm-10\">\n" +
-    "                <div class=\"checkbox\">\n" +
-    "                    <label>\n" +
-    "                        <input type=\"checkbox\" ng-model=\"config.required\" ng-true-value=\"true\" ng-false-value=\"false\">\n" +
-    "                        Required?\n" +
-    "                    </label>\n" +
-    "                </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"form-group\">\n" +
+    "        <div class=\"col-sm-offset-2 col-sm-10\">\n" +
+    "            <div class=\"checkbox\">\n" +
+    "                <label>\n" +
+    "                    <input type=\"checkbox\" ng-model=\"config.required\" ng-true-value=\"true\" ng-false-value=\"false\"> Required\n" +
+    "                </label>\n" +
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -844,11 +854,17 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
 
 angular.module("design/directives/inputBox/inputBoxResult.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/inputBox/inputBoxResult.html",
-    "<div class=\"form-group\">\n" +
-    "    <label class=\"col-sm-2 control-label\"><%= \"label\"%></label>\n" +
+    "<div class=\"form-horizontal\">\n" +
+    "    <div class=\"form-group\">\n" +
+    "        <label class=\"col-sm-2 control-label\"><%= config.label %></label>\n" +
     "\n" +
-    "    <div class=\"col-sm-10\">\n" +
-    "        <input type=\"text\" class=\"form-control\" ng-model=\"<%= config.modelName%>\">\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <input type=\"text\" class=\"form-control\" ng-model=\"<%= config.modelName%>\"\n" +
+    "                    <% if(config.required) { %>\n" +
+    "                        ng-required=\"true\"\n" +
+    "                    <% } %>\n" +
+    "            />\n" +
+    "        </div>\n" +
     "    </div>\n" +
     "</div>");
 }]);
@@ -961,7 +977,7 @@ angular.module("design/services/modal/addCont.html", []).run(["$templateCache", 
     "\n" +
     "    <p ng-bind=\"options.description\" ng-show=\"options.description\"></p>\n" +
     "</div>\n" +
-    "<div ng-form=\"designForm\" name=\"designForm\">\n" +
+    "<div ng-form=\"designForm\" name=\"designForm\" class=\"form-horizontal\">\n" +
     "    <div class=\"modal-body\" ng-bind-html-unsafe=\"contentHtml\">\n" +
     "\n" +
     "    </div>\n" +

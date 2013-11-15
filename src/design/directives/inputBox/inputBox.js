@@ -35,10 +35,15 @@ angular.module("qing")
                     scope.config = scope.config || {
                         boxType: "default"
                     };
+
+                    scope.modelNameMaskOption = {
+                        regex: "[a-zA-Z_]+"
+                    };
+
                     scope.getResult = function () {
                         var type = underscoreService.findWhere(scope.inputBoxConfig.types, function (item) {
                             return item.value === scope.config.boxType;
-                        })
+                        });
                         return {
                             tpl: {
                                 url: "design/directives/inputBox/inputBoxResult.html",

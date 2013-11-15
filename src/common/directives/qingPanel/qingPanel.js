@@ -15,7 +15,7 @@ qing.qingPanelDirective = function (phase) {
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
-
+                        console.log(scope, "qing-panel");
                         templateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
                             if (tplContent && (tplContent.trim())) {
                                 element.find(".content").replaceWith($compile(tplContent.trim())(scope));

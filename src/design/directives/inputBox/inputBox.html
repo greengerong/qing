@@ -1,15 +1,15 @@
-<div class="form-horizontal md-qing-input-box">
+<div class="md-qing-input-box">
     <pre>{{config | json}}</pre>
     <div class="form-group">
         <label class="col-sm-2 control-label">model name</label>
-        <div class="col-sm-10">
-            <input type="text" class="form-control" ng-model="config.modelName" ng-required="true">
+        <div class="col-sm-10">                                                        input-mask="'Regex'" mask-option="modelNameMaskOption"
+            <span>vm.</span><input type="text" class="form-control"  ng-model="config.modelName" ng-required="true">
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-2 control-label">label name</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" ng-model="config.label˚" ng-required="true">
+            <input type="text" class="form-control" ng-model="config.label" ng-required="true">
         </div>
     </div>
     <div class="form-group">

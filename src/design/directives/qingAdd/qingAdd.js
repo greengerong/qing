@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module("qing")
-    .filter('pluginType',function(){
-        return function(pluginList,pluginType){
+    .filter('pluginType', function () {
+        return function (pluginList, pluginType) {
             var plugins = {};
-            angular.forEach(pluginList,function(plugin,pluginName){
-                if(plugin.type.toLocaleLowerCase() == pluginType){
+            angular.forEach(pluginList, function (plugin, pluginName) {
+                if (plugin.type.toLocaleLowerCase() == pluginType) {
                     plugins[pluginName] = plugin;
                 }
             });
@@ -21,13 +21,15 @@ angular.module("qing")
                     "qingMark": "="
                 },
                 link: function (scope, element, attrs) {
+                    console.log(scope, scope.$parent, "qing-add");
+
                     scope.designCallBack = function (pluginName, html) {
                         $compile(html)(scope.$parent).insertBefore(element);
                         templateService.savePanelTemplate(scope.qingMark, html);
                     };
                 },
                 controller: ["$scope", function ($scope) {
-                    var closeNav = function(){
+                    var closeNav = function () {
                         $scope.addOpen = false;
                         $scope.subListOpen = '';
                     }
@@ -40,9 +42,9 @@ angular.module("qing")
 
                     $scope.pluginList = pluginsService.getAllPlugins();
 
-                    $scope.showSubList = function (type){
+                    $scope.showSubList = function (type) {
                         $scope.subListOpen = $scope.subListOpen == type ? '' : type;
-                    }
+                    };
 
                     $scope.addContModal = function (pluginName) {
                         pluginModalService.showDesignModal(pluginName)

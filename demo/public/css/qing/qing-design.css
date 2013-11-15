@@ -5928,6 +5928,9 @@ td.visible-print {
 .input-box-type {
   width: 80%;
 }
+.md-qing-input-box .control-label {
+  padding-top: 0;
+}
 .design-tool-bar {
   position: absolute;
   right: -11px;
@@ -5949,6 +5952,7 @@ td.visible-print {
 .qing-add {
   margin: 2px;
   position: relative;
+  clear: both;
 }
 .qing-add .btn {
   display: block;

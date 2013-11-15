@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-14 */
+/*! qing - v0.0.0 - 2013-11-15 */
 //TODO: should can be add by each design directive; Maybe use window Array
 angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular"])
     .constant('panelConfig', {
@@ -21,7 +21,7 @@ qing.qingPanelDirective = function (phase) {
                     },
                     link: function (scope, element, attrs) {
                         scope.qingMark = attrs.qingMark;
-
+                        console.log(scope, "qing-panel");
                         templateService.getPanelTemplate(scope.qingMark).then(function (tplContent) {
                             if (tplContent && (tplContent.trim())) {
                                 element.find(".content").replaceWith($compile(tplContent.trim())(scope));
@@ -135,7 +135,7 @@ angular.module("qing")
 
         self.confirm = function (options) {
             var modalInstance = $modal.open({
-                templateUrl: "common/services/messagebox/messagebox.html",
+                templateUrl: "common/services/messageBox/messageBox.html",
                 controller: [ "$scope", "$modalInstance",
                     function ($scope, $modalInstance) {
                         $scope.options = options;

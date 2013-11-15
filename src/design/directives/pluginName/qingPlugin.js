@@ -8,6 +8,7 @@ angular.module("qing")
             return {
                 restrict: "EA",
                 scope: {
+                    vm: "="
                 },
                 link: function (scope, element, attrs) {
                     scope.qingMark = attrs.qingMark;

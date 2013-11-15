@@ -16,7 +16,8 @@ angular.module("qing")
                 $pluginElm.attr({
                     "plugin-data": angular.toJson(result.data),
                     "qing-plugin": pluginName,
-                    "parent-qing-mark": "qing-mark"
+                    "parent-qing-mark": "qing-mark",
+                    "vm": "vm"
                 });
 
                 if (!$pluginElm.attr("qing-mark")) {
