@@ -821,18 +821,24 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
     "    <pre>{{config | json}}</pre>\n" +
     "    <div class=\"form-group\">\n" +
     "        <label class=\"col-sm-2 control-label\">model name</label>\n" +
-    "        <div class=\"col-sm-10\">                                                        input-mask=\"'Regex'\" mask-option=\"modelNameMaskOption\"\n" +
-    "            <span>vm.</span><input type=\"text\" class=\"form-control\"  ng-model=\"config.modelName\" ng-required=\"true\">\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <div class=\"input-group\">\n" +
+    "                <span class=\"input-group-addon\">vm.</span>\n" +
+    "                <input type=\"text\" class=\"form-control\" ng-model=\"config.modelName\" ng-required=\"true\">\n" +
+    "            </div>\n" +
+    "            <!--input-mask=\"'Regex'\" mask-option=\"modelNameMaskOption\"-->\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"form-group\">\n" +
     "        <label class=\"col-sm-2 control-label\">label name</label>\n" +
+    "\n" +
     "        <div class=\"col-sm-10\">\n" +
     "            <input type=\"text\" class=\"form-control\" ng-model=\"config.label\" ng-required=\"true\">\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"form-group\">\n" +
     "        <label for=\"inputBoxType\" class=\"col-sm-2 control-label\">Type</label>\n" +
+    "\n" +
     "        <div class=\"col-sm-10\">\n" +
     "            <select ui-select2 ng-model=\"config.boxType\" class=\"input-box-type\" id=\"inputBoxType\"\n" +
     "                    data-placeholder=\"Input box type\">\n" +
@@ -844,7 +850,8 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
     "        <div class=\"col-sm-offset-2 col-sm-10\">\n" +
     "            <div class=\"checkbox\">\n" +
     "                <label>\n" +
-    "                    <input type=\"checkbox\" ng-model=\"config.required\" ng-true-value=\"true\" ng-false-value=\"false\"> Required\n" +
+    "                    <input type=\"checkbox\" ng-model=\"config.required\" ng-true-value=\"true\" ng-false-value=\"false\">\n" +
+    "                    Required\n" +
     "                </label>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -859,7 +866,7 @@ angular.module("design/directives/inputBox/inputBoxResult.html", []).run(["$temp
     "        <label class=\"col-sm-2 control-label\"><%= config.label %></label>\n" +
     "\n" +
     "        <div class=\"col-sm-10\">\n" +
-    "            <input type=\"text\" class=\"form-control\" ng-model=\"<%= config.modelName%>\"\n" +
+    "            <input type=\"text\" class=\"form-control\" ng-model=\"<%= 'vm.' + config.modelName%>\"\n" +
     "                    <% if(config.required) { %>\n" +
     "                        ng-required=\"true\"\n" +
     "                    <% } %>\n" +
