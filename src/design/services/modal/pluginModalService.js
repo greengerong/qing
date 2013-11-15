@@ -12,7 +12,7 @@ angular.module("qing")
                 var html = result.tpl.url ?
                     underscoreService.template($templateCache.get(result.tpl.url), data)
                     : result.html;
-                var $pluginElm = angular.element(html);
+                var $pluginElm = angular.element(html.trim());
                 $pluginElm.attr({
                     "plugin-data": angular.toJson(result.data),
                     "qing-plugin": pluginName,
@@ -49,9 +49,9 @@ angular.module("qing")
 
                             var pluginHtml = angular.element(pluginDesigner.plugin)[0].outerHTML;
                             var contentTplUrl = "design/services/modal/modalBody.html";
-                            var $modalBody = underscoreService.template($templateCache.get(contentTplUrl), {contentHtml: pluginHtml});
+                            var modalBody = underscoreService.template($templateCache.get(contentTplUrl), {contentHtml: pluginHtml});
 
-                            $scope.contentHtml = $compile($modalBody)(pluginScope);
+                            $scope.contentHtml = $compile(modalBody.trim())(pluginScope);
                             $scope.options = pluginsService.getPlugin(pluginName);
                             pluginScope.ok = function () {
                                 var result = pluginScope.getResult && angular.isFunction(pluginScope.getResult)

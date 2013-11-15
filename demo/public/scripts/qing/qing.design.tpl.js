@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-15 */
+/*! qing - v0.0.0 - 2013-11-16 */
 angular.module("qing", ["qing.template",
         "ui.bootstrap",
         "ngmodel.format",
@@ -266,11 +266,13 @@ angular.module("qing")
         types: [
             {
                 text: "default text box",
-                value: "default"
+                value: "default",
+                type: "text",
             },
             {
                 text: "email box",
-                value: "email"
+                value: "email",
+                pattern: "/[a-zA-Z0-9._%-]+@[a-zA-Z0-9-]+\\.[a-zA-Z]{2,4}/"
             },
             {
                 text: "currency box",
@@ -292,15 +294,15 @@ angular.module("qing")
                     };
 
                     scope.getResult = function () {
-                        var type = underscoreService.findWhere(scope.inputBoxConfig.types, function (item) {
-                            return item.value === scope.config.boxType;
-                        });
+                        var type = underscoreService.findWhere(inputBoxConfig.types, {value: scope.config.boxType});
+
                         return {
                             tpl: {
                                 url: "design/directives/inputBox/inputBoxResult.html",
                                 data: {
 //                                    mask:type.getOption()
-                                    config: scope.config
+                                    config: scope.config,
+                                    type: type
                                 }
                             },
                             data: {
@@ -667,7 +669,7 @@ angular.module("qing")
                 var html = result.tpl.url ?
                     underscoreService.template($templateCache.get(result.tpl.url), data)
                     : result.html;
-                var $pluginElm = angular.element(html);
+                var $pluginElm = angular.element(html.trim());
                 $pluginElm.attr({
                     "plugin-data": angular.toJson(result.data),
                     "qing-plugin": pluginName,
@@ -704,9 +706,9 @@ angular.module("qing")
 
                             var pluginHtml = angular.element(pluginDesigner.plugin)[0].outerHTML;
                             var contentTplUrl = "design/services/modal/modalBody.html";
-                            var $modalBody = underscoreService.template($templateCache.get(contentTplUrl), {contentHtml: pluginHtml});
+                            var modalBody = underscoreService.template($templateCache.get(contentTplUrl), {contentHtml: pluginHtml});
 
-                            $scope.contentHtml = $compile($modalBody)(pluginScope);
+                            $scope.contentHtml = $compile(modalBody.trim())(pluginScope);
                             $scope.options = pluginsService.getPlugin(pluginName);
                             pluginScope.ok = function () {
                                 var result = pluginScope.getResult && angular.isFunction(pluginScope.getResult)
@@ -826,7 +828,7 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
     "            </div>\n" +
     "            <span class=\"help-block\" ng-show=\"designForm.modelName.$error.required\">Model name required.</span>\n" +
     "            <span class=\"help-block\"\n" +
-    "                  ng-show=\"designForm.modelName.$error.pattern\">Model name should be a valid word.</span>\n" +
+    "                  ng-show=\"designForm.modelName.$error.pattern\">Model name is invalid.</span>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "    <div class=\"form-group\" ng-class=\"{'has-error':designForm.label.$invalid,'has-success':designForm.label.$valid}\">\n" +
@@ -862,16 +864,28 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
 
 angular.module("design/directives/inputBox/inputBoxResult.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/inputBox/inputBoxResult.html",
+    "<% var inputName = 'input_' + guid.newId(); %>\n" +
     "<div class=\"form-horizontal\">\n" +
-    "    <div class=\"form-group\">\n" +
+    "    <div class=\"form-group\" ng-class=\"{'has-error':form['<%= inputName %>'].$invalid,'has-success':form['<%= inputName%>'].$valid}\">\n" +
     "        <label class=\"col-sm-2 control-label\"><%= config.label %></label>\n" +
     "\n" +
     "        <div class=\"col-sm-10\">\n" +
-    "            <input type=\"text\" class=\"form-control\" ng-model=\"<%= 'vm.' + config.modelName%>\"\n" +
+    "            <input type=\"text\" class=\"form-control\" name=\"<%= inputName%>\" ng-model=\"<%= 'vm.' + config.modelName%>\"\n" +
     "                    <% if(config.required) { %>\n" +
     "                        ng-required=\"true\"\n" +
     "                    <% } %>\n" +
+    "                    <% if(type.pattern) { %>\n" +
+    "                        ng-pattern=\"<%= type.pattern %>\"\n" +
+    "                    <% } %>\n" +
     "            />\n" +
+    "            <!--change to error directive-->\n" +
+    "            <% if(config.required) { %>\n" +
+    "             <span class=\"help-block\" ng-show=\"form['<%= inputName %>'].$error.required\"><%= config.label %> required.</span>\n" +
+    "            <% } %>\n" +
+    "            <% if(type.pattern) { %>\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  ng-show=\"form['<%= inputName  %>'].$error.pattern\"><%= config.label %> is invalid.</span>\n" +
+    "            <% } %>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>");

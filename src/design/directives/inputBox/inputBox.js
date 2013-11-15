@@ -11,11 +11,13 @@ angular.module("qing")
         types: [
             {
                 text: "default text box",
-                value: "default"
+                value: "default",
+                type: "text",
             },
             {
                 text: "email box",
-                value: "email"
+                value: "email",
+                pattern: "/[a-zA-Z0-9._%-]+@[a-zA-Z0-9-]+\\.[a-zA-Z]{2,4}/"
             },
             {
                 text: "currency box",
@@ -37,15 +39,15 @@ angular.module("qing")
                     };
 
                     scope.getResult = function () {
-                        var type = underscoreService.findWhere(scope.inputBoxConfig.types, function (item) {
-                            return item.value === scope.config.boxType;
-                        });
+                        var type = underscoreService.findWhere(inputBoxConfig.types, {value: scope.config.boxType});
+
                         return {
                             tpl: {
                                 url: "design/directives/inputBox/inputBoxResult.html",
                                 data: {
 //                                    mask:type.getOption()
-                                    config: scope.config
+                                    config: scope.config,
+                                    type: type
                                 }
                             },
                             data: {
