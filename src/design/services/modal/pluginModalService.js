@@ -65,6 +65,14 @@ angular.module("qing")
                                 $modalInstance.dismiss('cancel');
                             };
 
+                            $scope.ok = function () {
+                                pluginScope.ok();
+                            };
+
+                            $scope.cancel = function () {
+                                pluginScope.cancel();
+                            };
+
                         }],
                     resolve: {
                         "pluginDesigner": function () {
