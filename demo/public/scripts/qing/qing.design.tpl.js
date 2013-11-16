@@ -283,6 +283,16 @@ angular.module("qing")
                 text: "number box",
                 value: "number",
                 pattern: "/^[+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\\.[0-9]+))$/"
+            },
+            {
+                text: "url box",
+                value: "url",
+                pattern: "/^http://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$ ；^[a-zA-z]+://(w+(-w+)*)(.(w+(-w+)*))*(?S*)?$/"
+            },
+            {
+                text: " phone box",
+                value: "phone",
+                pattern: "/^(\\(\\d{3,4}\\)|\\d{3,4}-)?\\d{7,8}$/"
             }
         ]
     })
@@ -300,7 +310,6 @@ angular.module("qing")
                     };
 
                     scope.getResult = function () {
-
 
                         return {
                             tpl: {
@@ -867,6 +876,7 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
     "        <div class=\"col-sm-10\">\n" +
     "            <input type=\"text\" ng-model=\"config.pattern\" class=\"form-control\" id=\"inputBoxPattern\"\n" +
     "                    />\n" +
+    "            <span class=\"help-block\">Pattern should like  '/xxx/'.</span>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
