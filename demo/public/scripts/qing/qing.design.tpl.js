@@ -743,6 +743,14 @@ angular.module("qing")
                                 $modalInstance.dismiss('cancel');
                             };
 
+                            $scope.ok = function () {
+                                pluginScope.ok();
+                            };
+
+                            $scope.cancel = function () {
+                                pluginScope.cancel();
+                            };
+
                         }],
                     resolve: {
                         "pluginDesigner": function () {
@@ -876,7 +884,7 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
     "        <div class=\"col-sm-10\">\n" +
     "            <input type=\"text\" ng-model=\"config.pattern\" class=\"form-control\" id=\"inputBoxPattern\"\n" +
     "                    />\n" +
-    "            <span class=\"help-block\">Pattern should like  '/xxx/'.</span>\n" +
+    "            <span class=\"help-block\">Pattern should like '/xxx/'.</span>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
