@@ -12,7 +12,7 @@ angular.module("qing")
             {
                 text: "default text box",
                 value: "default",
-                type: "text",
+                type: "text"
             },
             {
                 text: "email box",
@@ -21,7 +21,13 @@ angular.module("qing")
             },
             {
                 text: "currency box",
-                value: "currency"
+                value: "currency",
+                pattern: "/^[+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\\.[0-9]{2})?|(?:\\.[0-9]{3})*(?:,[0-9]{2})?)$/"
+            },
+            {
+                text: "number box",
+                value: "number",
+                pattern: "/^[+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\\.[0-9]+))$/"
             }
         ]
     })
@@ -39,15 +45,13 @@ angular.module("qing")
                     };
 
                     scope.getResult = function () {
-                        var type = underscoreService.findWhere(inputBoxConfig.types, {value: scope.config.boxType});
+
 
                         return {
                             tpl: {
                                 url: "design/directives/inputBox/inputBoxResult.html",
                                 data: {
-//                                    mask:type.getOption()
-                                    config: scope.config,
-                                    type: type
+                                    config: scope.config
                                 }
                             },
                             data: {
@@ -56,6 +60,14 @@ angular.module("qing")
                             }
                         };
                     };
-                }
+                },
+                controller: ["$scope", function ($scope) {
+                    $scope.boxTypeChange = function () {
+                        var type = underscoreService.findWhere(inputBoxConfig.types, {value: $scope.config.boxType});
+                        $scope.config.pattern = type.pattern;
+                    };
+
+                }]
             }
-        }]);
+        }])
+;

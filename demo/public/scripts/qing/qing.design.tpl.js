@@ -267,7 +267,7 @@ angular.module("qing")
             {
                 text: "default text box",
                 value: "default",
-                type: "text",
+                type: "text"
             },
             {
                 text: "email box",
@@ -276,7 +276,13 @@ angular.module("qing")
             },
             {
                 text: "currency box",
-                value: "currency"
+                value: "currency",
+                pattern: "/^[+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\\.[0-9]{2})?|(?:\\.[0-9]{3})*(?:,[0-9]{2})?)$/"
+            },
+            {
+                text: "number box",
+                value: "number",
+                pattern: "/^[+-]?[0-9]{1,3}(?:[0-9]*(?:[.,][0-9]{2})?|(?:,[0-9]{3})*(?:\\.[0-9]+))$/"
             }
         ]
     })
@@ -294,15 +300,13 @@ angular.module("qing")
                     };
 
                     scope.getResult = function () {
-                        var type = underscoreService.findWhere(inputBoxConfig.types, {value: scope.config.boxType});
+
 
                         return {
                             tpl: {
                                 url: "design/directives/inputBox/inputBoxResult.html",
                                 data: {
-//                                    mask:type.getOption()
-                                    config: scope.config,
-                                    type: type
+                                    config: scope.config
                                 }
                             },
                             data: {
@@ -311,9 +315,17 @@ angular.module("qing")
                             }
                         };
                     };
-                }
+                },
+                controller: ["$scope", function ($scope) {
+                    $scope.boxTypeChange = function () {
+                        var type = underscoreService.findWhere(inputBoxConfig.types, {value: $scope.config.boxType});
+                        $scope.config.pattern = type.pattern;
+                    };
+
+                }]
             }
-        }]);
+        }])
+;
 
 angular.module("qing")
     .directive("qingPlugin", ["$http", "$compile", "$templateCache", "$timeout", "pluginModalService",
@@ -844,11 +856,20 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
     "\n" +
     "        <div class=\"col-sm-10\">\n" +
     "            <select ui-select2 ng-model=\"config.boxType\" class=\"input-box-type\" id=\"inputBoxType\"\n" +
-    "                    data-placeholder=\"Input box type\">\n" +
+    "                    data-placeholder=\"Input box type\" ng-change=\"boxTypeChange();\">\n" +
     "                <option ng-repeat=\"type in inputBoxConfig.types\" value=\"{{type.value}}\">{{type.text}}</option>\n" +
     "            </select>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "    <div class=\"form-group\">\n" +
+    "        <label for=\"inputBoxPattern\" class=\"col-sm-2 control-label\">Pattern</label>\n" +
+    "\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <input type=\"text\" ng-model=\"config.pattern\" class=\"form-control\" id=\"inputBoxPattern\"\n" +
+    "                    />\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
     "    <div class=\"form-group\">\n" +
     "        <div class=\"col-sm-offset-2 col-sm-10\">\n" +
     "            <div class=\"checkbox\">\n" +
@@ -864,9 +885,11 @@ angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCa
 
 angular.module("design/directives/inputBox/inputBoxResult.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/inputBox/inputBoxResult.html",
-    "<% var inputName = 'input_' + guid.newId(); %>\n" +
-    "<div class=\"form-horizontal\">\n" +
-    "    <div class=\"form-group\" ng-class=\"{'has-error':form['<%= inputName %>'].$invalid,'has-success':form['<%= inputName%>'].$valid}\">\n" +
+    "<% var inputName = 'input_' + guid.newId(),\n" +
+    "    formName = 'from4' + inputName;\n" +
+    "%>\n" +
+    "<div ng-form=\"<%= formName %>\" class=\"form-horizontal\">\n" +
+    "    <div class=\"form-group\" ng-class=\"{'has-error':<%= formName %>['<%= inputName %>'].$invalid,'has-success':<%= formName %>['<%= inputName%>'].$valid}\">\n" +
     "        <label class=\"col-sm-2 control-label\"><%= config.label %></label>\n" +
     "\n" +
     "        <div class=\"col-sm-10\">\n" +
@@ -874,17 +897,17 @@ angular.module("design/directives/inputBox/inputBoxResult.html", []).run(["$temp
     "                    <% if(config.required) { %>\n" +
     "                        ng-required=\"true\"\n" +
     "                    <% } %>\n" +
-    "                    <% if(type.pattern) { %>\n" +
-    "                        ng-pattern=\"<%= type.pattern %>\"\n" +
+    "                    <% if(config.pattern) { %>\n" +
+    "                        ng-pattern=\"<%= config.pattern %>\"\n" +
     "                    <% } %>\n" +
     "            />\n" +
     "            <!--change to error directive-->\n" +
     "            <% if(config.required) { %>\n" +
-    "             <span class=\"help-block\" ng-show=\"form['<%= inputName %>'].$error.required\"><%= config.label %> required.</span>\n" +
+    "             <span class=\"help-block\" ng-show=\"<%= formName %>['<%= inputName %>'].$error.required\"><%= config.label %> required.</span>\n" +
     "            <% } %>\n" +
-    "            <% if(type.pattern) { %>\n" +
+    "            <% if(config.pattern) { %>\n" +
     "            <span class=\"help-block\"\n" +
-    "                  ng-show=\"form['<%= inputName  %>'].$error.pattern\"><%= config.label %> is invalid.</span>\n" +
+    "                  ng-show=\"<%= formName %>['<%= inputName  %>'].$error.pattern\"><%= config.label %> is invalid.</span>\n" +
     "            <% } %>\n" +
     "        </div>\n" +
     "    </div>\n" +

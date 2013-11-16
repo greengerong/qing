@@ -1,6 +1,8 @@
-<% var inputName = 'input_' + guid.newId(); %>
-<div class="form-horizontal">
-    <div class="form-group" ng-class="{'has-error':form['<%= inputName %>'].$invalid,'has-success':form['<%= inputName%>'].$valid}">
+<% var inputName = 'input_' + guid.newId(),
+    formName = 'from4' + inputName;
+%>
+<div ng-form="<%= formName %>" class="form-horizontal">
+    <div class="form-group" ng-class="{'has-error':<%= formName %>['<%= inputName %>'].$invalid,'has-success':<%= formName %>['<%= inputName%>'].$valid}">
         <label class="col-sm-2 control-label"><%= config.label %></label>
 
         <div class="col-sm-10">
@@ -8,17 +10,17 @@
                     <% if(config.required) { %>
                         ng-required="true"
                     <% } %>
-                    <% if(type.pattern) { %>
-                        ng-pattern="<%= type.pattern %>"
+                    <% if(config.pattern) { %>
+                        ng-pattern="<%= config.pattern %>"
                     <% } %>
             />
             <!--change to error directive-->
             <% if(config.required) { %>
-             <span class="help-block" ng-show="form['<%= inputName %>'].$error.required"><%= config.label %> required.</span>
+             <span class="help-block" ng-show="<%= formName %>['<%= inputName %>'].$error.required"><%= config.label %> required.</span>
             <% } %>
-            <% if(type.pattern) { %>
+            <% if(config.pattern) { %>
             <span class="help-block"
-                  ng-show="form['<%= inputName  %>'].$error.pattern"><%= config.label %> is invalid.</span>
+                  ng-show="<%= formName %>['<%= inputName  %>'].$error.pattern"><%= config.label %> is invalid.</span>
             <% } %>
         </div>
     </div>
