@@ -21,4 +21,4 @@
     15 对root-qing-panel上传入的url获取值赋值在vm上，并确保所有表单显示
     16 datepicker(angular-ui)
     17 日历
-    <doing>18 text-editor非设计器编辑 需要同时更新plugin-data;
+    <del>18 text-editor非设计器编辑 修正设计器获取html的逻辑;

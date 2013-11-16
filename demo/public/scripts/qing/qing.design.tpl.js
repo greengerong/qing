@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-16 */
+/*! qing - v0.0.0 - 2013-11-17 */
 angular.module("qing", ["qing.template",
         "ui.bootstrap",
         "ngmodel.format",
@@ -626,7 +626,7 @@ angular.module("qing")
     }])
     .directive("textEditorDesign", ["templateService", "guid",
         function (templateService, guid) {
-            var defaultText = "You can input any thing in there.";
+
             return {
                 restrict: 'EA',
                 replace: true,
@@ -634,9 +634,17 @@ angular.module("qing")
                     element.attr({contenteditable: true});
                     element.addClass("text-editor-design");
                     scope.editor = scope.editor || {};
-                    element.html(scope.editor.html ? scope.editor.html : defaultText);
 
                     var instance = CKEDITOR.inline(element[0]);
+
+                    if (scope.editor.qingMark) {
+                        templateService.getPanelTemplate(scope.editor.qingMark).then(function (tplContent) {
+                            if (tplContent && (tplContent.trim())) {
+                                instance.setData(tplContent.trim());
+                            }
+                        });
+                    }
+
 
                     scope.$on("$destroy", function () {
                         instance.destroy();
@@ -657,7 +665,6 @@ angular.module("qing")
                             data: {
                                 "key": "editor",
                                 "data": {
-                                    "html": html,
                                     "qingMark": qingMark
                                 }
                             }
