@@ -1,0 +1,14 @@
+<div class="form-group">
+    <label class="col-sm-2 control-label"><%= config.label %></label>
+
+    <div class="col-sm-10">
+        <div class="btn-group">
+            <% _.each(config.group,function(item){ %>
+            <button type="button" class="btn btn-primary" ng-model="<%= config.modelName%>"
+                    btn-radio="'<%= item.value %>'">
+                <%= item.label %>
+            </button>
+            <%})%>
+        </div>
+    </div>
+</div>

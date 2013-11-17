@@ -482,6 +482,61 @@ angular.module("qing")
 
 var qing = qing || {};
 qing.qingPanelDirective("design");
+angular.module("qing")
+    .run(["pluginsService", "pluginType", "templateService", function (pluginsService, pluginType) {
+        pluginsService.register("radio", {
+            "title": "Radio List",
+            "description": "",
+            "type": pluginType.COMPONENT,
+            "events": { }
+        });
+    }])
+    .directive("radio", [ "underscoreService",
+        function (underscoreService) {
+
+            return {
+                restrict: 'EA',
+                templateUrl: "design/directives/radio/radio.html",
+                replace: true,
+                link: function (scope, element, attrs) {
+
+                },
+                controller: ["$scope", function ($scope) {
+                    $scope.config = $scope.config || {
+                        group: [
+                            {}
+                        ]
+                    };
+
+                    $scope.remove = function (index) {
+                        $scope.config.group.splice(index, 1);
+                    };
+
+                    $scope.add = function () {
+                        $scope.config.group.push({});
+                    };
+
+                    $scope.getResult = function () {
+
+                        return {
+                            tpl: {
+                                url: "design/directives/radio/radioResult.html",
+                                data: {
+                                    config: $scope.config
+                                }
+                            },
+                            data: {
+                                "key": "config",
+                                "data": $scope.config
+                            }
+                        };
+                    };
+
+                }]
+            }
+        }])
+;
+
 angular.module('qing')
     .run(["pluginsService","pluginType",function(pluginsService,pluginType){
         pluginsService.register("row-container", {
@@ -822,7 +877,7 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html', 'design/services/modal/modalBody.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/radio/radio.html', 'design/directives/radio/radioResult.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html', 'design/services/modal/modalBody.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
@@ -851,7 +906,6 @@ angular.module("common/services/messageBox/messageBox.html", []).run(["$template
 angular.module("design/directives/inputBox/inputBox.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/inputBox/inputBox.html",
     "<div class=\"md-qing-input-box\">\n" +
-    "    <pre>{{config | json}}</pre>\n" +
     "    <div class=\"form-group\"\n" +
     "         ng-class=\"{'has-error':designForm.modelName.$invalid,'has-success':designForm.modelName.$valid}\">\n" +
     "        <label class=\"col-sm-2 control-label\">model name</label>\n" +
@@ -993,6 +1047,72 @@ angular.module("design/directives/qingPanel/qingPanel.html", []).run(["$template
     "    <!--plugin-name=\"qing-panel\" 暂时注释 是否可用有待商榷-->\n" +
     "    <div class=\"content\"></div>\n" +
     "    <qing-add qing-mark=\"qingMark\"></qing-add>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/radio/radio.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/radio/radio.html",
+    "<div class=\"md-qing-input-box\">\n" +
+    "    <div class=\"form-group\"\n" +
+    "         ng-class=\"{'has-error':designForm.modelName.$invalid,'has-success':designForm.modelName.$valid}\">\n" +
+    "        <label class=\"col-sm-2 control-label\">model name</label>\n" +
+    "\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <div class=\"input-group\">\n" +
+    "                <span class=\"input-group-addon\">vm.</span>\n" +
+    "                <input type=\"text\" name=\"modelName\" class=\"form-control\" ng-model=\"config.modelName\" ng-required=\"true\"\n" +
+    "                       ng-pattern=\"/^[a-zA-Z_]+(([a-zA-Z_]\\d*)|\\.)*$/\">\n" +
+    "            </div>\n" +
+    "            <span class=\"help-block\" ng-show=\"designForm.modelName.$error.required\">Model name required.</span>\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  ng-show=\"designForm.modelName.$error.pattern\">Model name is invalid.</span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"form-group\" ng-class=\"{'has-error':designForm.label.$invalid,'has-success':designForm.label.$valid}\">\n" +
+    "        <label class=\"col-sm-2 control-label\">label name</label>\n" +
+    "\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <input type=\"text\" name=\"label\" class=\"form-control\" ng-model=\"config.label\" ng-required=\"true\">\n" +
+    "            <span class=\"help-block\" ng-show=\"designForm.label.$error.required\">Label required.</span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "\n" +
+    "    <table class=\"table table-striped\">\n" +
+    "        <thead>\n" +
+    "        <tr>\n" +
+    "            <td></td>\n" +
+    "            <td>Label</td>\n" +
+    "            <td>Value</td>\n" +
+    "            <td><a ng-click=\"add(s)\"><span class=\"glyphicon glyphicon-plus\"></span></a></td>\n" +
+    "        </tr>\n" +
+    "        </thead>\n" +
+    "        <tbody>\n" +
+    "        <tr ng-repeat=\"item in config.group\">\n" +
+    "            <td>{{$index + 1}}</td>\n" +
+    "            <td><input ng-model=\"item.label\" type=\"text\" placeholder=\"type label\" class=\"form-control\"/></td>\n" +
+    "            <td><input ng-model=\"item.value\" type=\"text\" placeholder=\"type value\" class=\"form-control\"/></td>\n" +
+    "            <td><a ng-click=\"remove($index)\"><span class=\"glyphicon glyphicon-remove\"></span></a></td>\n" +
+    "        </tr>\n" +
+    "        </tbody>\n" +
+    "    </table>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/radio/radioResult.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/radio/radioResult.html",
+    "<div class=\"form-group\">\n" +
+    "    <label class=\"col-sm-2 control-label\"><%= config.label %></label>\n" +
+    "\n" +
+    "    <div class=\"col-sm-10\">\n" +
+    "        <div class=\"btn-group\">\n" +
+    "            <% _.each(config.group,function(item){ %>\n" +
+    "            <button type=\"button\" class=\"btn btn-primary\" ng-model=\"<%= config.modelName%>\"\n" +
+    "                    btn-radio=\"'<%= item.value %>'\">\n" +
+    "                <%= item.label %>\n" +
+    "            </button>\n" +
+    "            <%})%>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
     "</div>");
 }]);
 
