@@ -12,8 +12,8 @@
     7  对于form类似于row-container的封装，可以设置form的显示方式，Bootstrap form样式罗列。标记修改qing-root-panel增加qing-plugin(设计器指令)
        plugin-data(原始值)。   ??bootstrap 3 form 对于input结构变化不一致。此task 暂定，先支持class="form-horizontal"
     8  select2实现带url或者一般option的选择框
-    <doing>9  radio button group(angular-ui btn-radio)
-    10 check button group
+    <del>9  radio button group(angular-ui btn-radio)
+    <doing>10 check button group
     11 autocomplete box
     12 提交button 带着url可以提交scope上的vm对象
     13 button的disabled关联其他控件的验证。
