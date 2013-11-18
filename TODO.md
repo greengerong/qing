@@ -13,7 +13,7 @@
        plugin-data(原始值)。   ??bootstrap 3 form 对于input结构变化不一致。此task 暂定，先支持class="form-horizontal"
     8  select2实现带url或者一般option的选择框
     <del>9  radio button group(angular-ui btn-radio)
-    <doing>10 check button group
+    <del>10 check button group
     11 autocomplete box
     12 提交button 带着url可以提交scope上的vm对象
     13 button的disabled关联其他控件的验证。
@@ -22,3 +22,4 @@
     16 datepicker(angular-ui)
     17 日历
     <del>18 text-editor非设计器编辑 修正设计器获取html的逻辑;
+    <doing> 19 对于plugin修改删除后以前的scope的影响的去除，比如checkbox/radio先设置某值为default 为Yes，后修改为No，这将存在上下问的影响；
