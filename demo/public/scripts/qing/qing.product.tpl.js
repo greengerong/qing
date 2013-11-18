@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-17 */
+/*! qing - v0.0.0 - 2013-11-18 */
 //TODO: should can be add by each design directive; Maybe use window Array
 angular.module("qing", ["qing.template", "ui.bootstrap", "ngmodel.format", "green.inputmask4angular"])
     .constant('panelConfig', {

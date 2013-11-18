@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-17 */
+/*! qing - v0.0.0 - 2013-11-18 */
 angular.module("qing", ["qing.template",
         "ui.bootstrap",
         "ngmodel.format",
@@ -514,6 +514,20 @@ angular.module("qing")
 
                     $scope.add = function () {
                         $scope.config.group.push({});
+                    };
+
+                    $scope.setDefault = function (index) {
+                        console.log(index);
+                        var group = $scope.config.group;
+                        if (group[index].isDefault) {
+                            for (var i = 0; i < group.length; i++) {
+                                group[i].isDefault = i === index;
+                            }
+                        }
+                    };
+
+                    $scope.getDefaultText = function (item) {
+                        return item.isDefault ? "Yes" : "No";
                     };
 
                     $scope.getResult = function () {
@@ -1083,6 +1097,7 @@ angular.module("design/directives/radio/radio.html", []).run(["$templateCache", 
     "            <td></td>\n" +
     "            <td>Label</td>\n" +
     "            <td>Value</td>\n" +
+    "            <td>Default?</td>\n" +
     "            <td><a ng-click=\"add(s)\"><span class=\"glyphicon glyphicon-plus\"></span></a></td>\n" +
     "        </tr>\n" +
     "        </thead>\n" +
@@ -1091,6 +1106,12 @@ angular.module("design/directives/radio/radio.html", []).run(["$templateCache", 
     "            <td>{{$index + 1}}</td>\n" +
     "            <td><input ng-model=\"item.label\" type=\"text\" placeholder=\"type label\" class=\"form-control\"/></td>\n" +
     "            <td><input ng-model=\"item.value\" type=\"text\" placeholder=\"type value\" class=\"form-control\"/></td>\n" +
+    "            <td>\n" +
+    "                <button type=\"button\" class=\"btn btn-primary\" ng-model=\"item.isDefault\" btn-checkbox\n" +
+    "                        btn-checkbox-true=\"true\" btn-checkbox-false=\"false\"\n" +
+    "                        ng-click=\"setDefault($index)\">{{getDefaultText(item)}}\n" +
+    "                </button>\n" +
+    "            </td>\n" +
     "            <td><a ng-click=\"remove($index)\"><span class=\"glyphicon glyphicon-remove\"></span></a></td>\n" +
     "        </tr>\n" +
     "        </tbody>\n" +
@@ -1100,19 +1121,24 @@ angular.module("design/directives/radio/radio.html", []).run(["$templateCache", 
 
 angular.module("design/directives/radio/radioResult.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("design/directives/radio/radioResult.html",
-    "<div class=\"form-group\">\n" +
-    "    <label class=\"col-sm-2 control-label\"><%= config.label %></label>\n" +
+    "<%\n" +
+    "var defaultItem = _.findWhere(config.group,{isDefault:true});\n" +
+    "%>\n" +
+    "<div class=\"form-group\" <% if(defaultItem){%>\n" +
+    "ng-init=\"<%= config.modelName%> = '<%= defaultItem.value %>'\"\n" +
+    "<% }%>>\n" +
+    "<label class=\"col-sm-2 control-label\"><%= config.label %></label>\n" +
     "\n" +
-    "    <div class=\"col-sm-10\">\n" +
-    "        <div class=\"btn-group\">\n" +
-    "            <% _.each(config.group,function(item){ %>\n" +
-    "            <button type=\"button\" class=\"btn btn-primary\" ng-model=\"<%= config.modelName%>\"\n" +
-    "                    btn-radio=\"'<%= item.value %>'\">\n" +
-    "                <%= item.label %>\n" +
-    "            </button>\n" +
-    "            <%})%>\n" +
-    "        </div>\n" +
+    "<div class=\"col-sm-10\">\n" +
+    "    <div class=\"btn-group\">\n" +
+    "        <% _.each(config.group,function(item){ %>\n" +
+    "        <button type=\"button\" class=\"btn btn-primary\" ng-model=\"<%= config.modelName%>\"\n" +
+    "                btn-radio=\"'<%= item.value %>'\">\n" +
+    "            <%= item.label %>\n" +
+    "        </button>\n" +
+    "        <%})%>\n" +
     "    </div>\n" +
+    "</div>\n" +
     "</div>");
 }]);
 

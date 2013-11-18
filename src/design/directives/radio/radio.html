@@ -29,6 +29,7 @@
             <td></td>
             <td>Label</td>
             <td>Value</td>
+            <td>Default?</td>
             <td><a ng-click="add(s)"><span class="glyphicon glyphicon-plus"></span></a></td>
         </tr>
         </thead>
@@ -37,6 +38,12 @@
             <td>{{$index + 1}}</td>
             <td><input ng-model="item.label" type="text" placeholder="type label" class="form-control"/></td>
             <td><input ng-model="item.value" type="text" placeholder="type value" class="form-control"/></td>
+            <td>
+                <button type="button" class="btn btn-primary" ng-model="item.isDefault" btn-checkbox
+                        btn-checkbox-true="true" btn-checkbox-false="false"
+                        ng-click="setDefault($index)">{{getDefaultText(item)}}
+                </button>
+            </td>
             <td><a ng-click="remove($index)"><span class="glyphicon glyphicon-remove"></span></a></td>
         </tr>
         </tbody>

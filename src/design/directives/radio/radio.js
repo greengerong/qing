@@ -32,6 +32,20 @@ angular.module("qing")
                         $scope.config.group.push({});
                     };
 
+                    $scope.setDefault = function (index) {
+                        console.log(index);
+                        var group = $scope.config.group;
+                        if (group[index].isDefault) {
+                            for (var i = 0; i < group.length; i++) {
+                                group[i].isDefault = i === index;
+                            }
+                        }
+                    };
+
+                    $scope.getDefaultText = function (item) {
+                        return item.isDefault ? "Yes" : "No";
+                    };
+
                     $scope.getResult = function () {
 
                         return {
