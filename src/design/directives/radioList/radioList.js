@@ -1,18 +1,18 @@
 angular.module("qing")
     .run(["pluginsService", "pluginType", "templateService", function (pluginsService, pluginType) {
-        pluginsService.register("radio", {
+        pluginsService.register("radio-list", {
             "title": "Radio List",
             "description": "",
             "type": pluginType.COMPONENT,
             "events": { }
         });
     }])
-    .directive("radio", [ "underscoreService",
-        function (underscoreService) {
+    .directive("radioList", [
+        function () {
 
             return {
                 restrict: 'EA',
-                templateUrl: "design/directives/radio/radio.html",
+                templateUrl: "design/directives/radioList/radioList.html",
                 replace: true,
                 link: function (scope, element, attrs) {
 
@@ -50,7 +50,7 @@ angular.module("qing")
 
                         return {
                             tpl: {
-                                url: "design/directives/radio/radioResult.html",
+                                url: "design/directives/radioList/radioListResult.html",
                                 data: {
                                     config: $scope.config
                                 }

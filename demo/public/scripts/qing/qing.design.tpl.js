@@ -484,19 +484,19 @@ var qing = qing || {};
 qing.qingPanelDirective("design");
 angular.module("qing")
     .run(["pluginsService", "pluginType", "templateService", function (pluginsService, pluginType) {
-        pluginsService.register("radio", {
+        pluginsService.register("radio-list", {
             "title": "Radio List",
             "description": "",
             "type": pluginType.COMPONENT,
             "events": { }
         });
     }])
-    .directive("radio", [ "underscoreService",
-        function (underscoreService) {
+    .directive("radioList", [
+        function () {
 
             return {
                 restrict: 'EA',
-                templateUrl: "design/directives/radio/radio.html",
+                templateUrl: "design/directives/radioList/radioList.html",
                 replace: true,
                 link: function (scope, element, attrs) {
 
@@ -534,7 +534,7 @@ angular.module("qing")
 
                         return {
                             tpl: {
-                                url: "design/directives/radio/radioResult.html",
+                                url: "design/directives/radioList/radioListResult.html",
                                 data: {
                                     config: $scope.config
                                 }
@@ -891,7 +891,7 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/radio/radio.html', 'design/directives/radio/radioResult.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html', 'design/services/modal/modalBody.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/radioList/radioList.html', 'design/directives/radioList/radioListResult.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html', 'design/services/modal/modalBody.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
@@ -1064,8 +1064,8 @@ angular.module("design/directives/qingPanel/qingPanel.html", []).run(["$template
     "</div>");
 }]);
 
-angular.module("design/directives/radio/radio.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("design/directives/radio/radio.html",
+angular.module("design/directives/radioList/radioList.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/radioList/radioList.html",
     "<div class=\"md-qing-input-box\">\n" +
     "    <div class=\"form-group\"\n" +
     "         ng-class=\"{'has-error':designForm.modelName.$invalid,'has-success':designForm.modelName.$valid}\">\n" +
@@ -1119,8 +1119,8 @@ angular.module("design/directives/radio/radio.html", []).run(["$templateCache", 
     "</div>");
 }]);
 
-angular.module("design/directives/radio/radioResult.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("design/directives/radio/radioResult.html",
+angular.module("design/directives/radioList/radioListResult.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/radioList/radioListResult.html",
     "<%\n" +
     "var defaultItem = _.findWhere(config.group,{isDefault:true});\n" +
     "%>\n" +
