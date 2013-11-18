@@ -23,4 +23,5 @@
     17 日历
     <del>18 text-editor非设计器编辑 修正设计器获取html的逻辑;
     <doing> 19 对于plugin修改删除后以前的scope的影响的去除，比如checkbox/radio先设置某值为default 为Yes，
-            后修改为No，这将存在上下问的影响；(目前解决方案可能是对每个plugin设计时候记录ng-model，在更新和删除时候delete掉)
+            后修改为No，这将存在上下问的影响；(目前解决方案可能是对每个plugin设计时候记录ng-model，在更新
+            和删除时候delete掉;不考虑其他组件也许正在使用次ng-model)
