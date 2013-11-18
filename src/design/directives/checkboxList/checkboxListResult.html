@@ -1,0 +1,16 @@
+<div class="form-group" <% if(config.group){%>
+ng-init="<% _.each(config.group,function(item){%> vm.<%= item.modelName %> = <%= (!!item.isDefault) %>; <% });%>"
+<% }%>>
+<label class="col-sm-2 control-label"><%= config.label %></label>
+
+<div class="col-sm-10">
+    <div class="btn-group">
+        <% _.each(config.group,function(item){ %>
+        <button type="button" class="btn btn-info" ng-model="vm.<%= item.modelName%>"
+                btn-checkbox>
+            <%= item.label %>
+        </button>
+        <%})%>
+    </div>
+</div>
+</div>

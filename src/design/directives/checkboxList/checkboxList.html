@@ -1,0 +1,42 @@
+<div class="md-qing-checkboxlist-box">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td></td>
+            <td>Label</td>
+            <td>Model Name</td>
+            <td>Checked?</td>
+            <td><a ng-click="add(s)"><span class="glyphicon glyphicon-plus"></span></a></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in config.group">
+            <td class="col1">{{$index + 1}}</td>
+            <td class="col2" ng-form name="labelForm" class="form-group"
+                ng-class="{'has-error':labelForm.label.$invalid,'has-success':labelForm.label.$valid}">
+
+                <input type="text" name="label" class="form-control" ng-model="item.label" ng-required="true">
+                <span class="help-block" ng-show="labelForm.label.$error.required">Label required.</span>
+            </td>
+            <td class="col3" ng-form name="modeNameForm"
+                ng-class="{'has-error':modeNameForm.modelName.$invalid,'has-success':modeNameForm.modelName.$valid}">
+                <div class="input-group">
+                    <span class="input-group-addon">vm.</span>
+                    <input type="text" name="modelName" class="form-control" ng-model="item.modelName"
+                           ng-required="true"
+                           ng-pattern="/^[a-zA-Z_]+(([a-zA-Z_]\d*)|\.)*$/">
+                </div>
+                <span class="help-block" ng-show="modeNameForm.modelName.$error.required">Model name required.</span>
+            <span class="help-block"
+                  ng-show="modeNameForm.modelName.$error.pattern">Model name is invalid.</span>
+            </td>
+            <td class="col4">
+                <button type="button" class="btn btn-info" ng-model="item.isDefault" btn-checkbox
+                        btn-checkbox-true="true" btn-checkbox-false="false">{{getDefaultText(item)}}
+                </button>
+            </td>
+            <td class="col5"><a ng-click="remove($index)"><span class="glyphicon glyphicon-remove"></span></a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

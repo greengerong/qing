@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-18 */
+/*! qing - v0.0.0 - 2013-11-19 */
 angular.module("qing", ["qing.template",
         "ui.bootstrap",
         "ngmodel.format",
@@ -253,6 +253,65 @@ String.format = function () {
 
     return s;
 };
+angular.module("qing")
+    .run(["pluginsService", "pluginType", "templateService", function (pluginsService, pluginType) {
+        pluginsService.register("checkbox-list", {
+            "title": "Checkbox List",
+            "description": "",
+            "type": pluginType.COMPONENT,
+            "events": { }
+        });
+    }])
+    .directive("checkboxList", [
+        function () {
+
+            return {
+                restrict: 'EA',
+                templateUrl: "design/directives/checkboxList/checkboxList.html",
+                replace: true,
+                link: function (scope, element, attrs) {
+
+                },
+                controller: ["$scope", function ($scope) {
+                    $scope.config = $scope.config || {
+                        group: [
+                            {}
+                        ]
+                    };
+
+                    $scope.remove = function (index) {
+                        $scope.config.group.splice(index, 1);
+                    };
+
+                    $scope.add = function () {
+                        $scope.config.group.push({});
+                    };
+
+                    $scope.getDefaultText = function (item) {
+                        return item.isDefault ? "Yes" : "No";
+                    };
+
+                    $scope.getResult = function () {
+
+                        return {
+                            tpl: {
+                                url: "design/directives/checkboxList/checkboxListResult.html",
+                                data: {
+                                    config: $scope.config
+                                }
+                            },
+                            data: {
+                                "key": "config",
+                                "data": $scope.config
+                            }
+                        };
+                    };
+
+                }]
+            }
+        }])
+;
+
 angular.module("qing")
     .run(["pluginsService", "pluginType", "templateService", function (pluginsService, pluginType) {
         pluginsService.register("input-box", {
@@ -891,7 +950,7 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/radioList/radioList.html', 'design/directives/radioList/radioListResult.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html', 'design/services/modal/modalBody.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/checkboxList/checkboxList.html', 'design/directives/checkboxList/checkboxListResult.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/radioList/radioList.html', 'design/directives/radioList/radioListResult.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html', 'design/services/modal/modalBody.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
@@ -914,6 +973,72 @@ angular.module("common/services/messageBox/messageBox.html", []).run(["$template
     "    </button>\n" +
     "    <button type=\"button\" class=\"btn btn-warning\" ng-hide=\"options.hideCancel\" ng-bind=\"options.cancelText || 'Cancel'\"\n" +
     "            ng-click=\"cancel()\"></button>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/checkboxList/checkboxList.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/checkboxList/checkboxList.html",
+    "<div class=\"md-qing-checkboxlist-box\">\n" +
+    "    <table class=\"table table-striped\">\n" +
+    "        <thead>\n" +
+    "        <tr>\n" +
+    "            <td></td>\n" +
+    "            <td>Label</td>\n" +
+    "            <td>Model Name</td>\n" +
+    "            <td>Checked?</td>\n" +
+    "            <td><a ng-click=\"add(s)\"><span class=\"glyphicon glyphicon-plus\"></span></a></td>\n" +
+    "        </tr>\n" +
+    "        </thead>\n" +
+    "        <tbody>\n" +
+    "        <tr ng-repeat=\"item in config.group\">\n" +
+    "            <td class=\"col1\">{{$index + 1}}</td>\n" +
+    "            <td class=\"col2\" ng-form name=\"labelForm\" class=\"form-group\"\n" +
+    "                ng-class=\"{'has-error':labelForm.label.$invalid,'has-success':labelForm.label.$valid}\">\n" +
+    "\n" +
+    "                <input type=\"text\" name=\"label\" class=\"form-control\" ng-model=\"item.label\" ng-required=\"true\">\n" +
+    "                <span class=\"help-block\" ng-show=\"labelForm.label.$error.required\">Label required.</span>\n" +
+    "            </td>\n" +
+    "            <td class=\"col3\" ng-form name=\"modeNameForm\"\n" +
+    "                ng-class=\"{'has-error':modeNameForm.modelName.$invalid,'has-success':modeNameForm.modelName.$valid}\">\n" +
+    "                <div class=\"input-group\">\n" +
+    "                    <span class=\"input-group-addon\">vm.</span>\n" +
+    "                    <input type=\"text\" name=\"modelName\" class=\"form-control\" ng-model=\"item.modelName\"\n" +
+    "                           ng-required=\"true\"\n" +
+    "                           ng-pattern=\"/^[a-zA-Z_]+(([a-zA-Z_]\\d*)|\\.)*$/\">\n" +
+    "                </div>\n" +
+    "                <span class=\"help-block\" ng-show=\"modeNameForm.modelName.$error.required\">Model name required.</span>\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  ng-show=\"modeNameForm.modelName.$error.pattern\">Model name is invalid.</span>\n" +
+    "            </td>\n" +
+    "            <td class=\"col4\">\n" +
+    "                <button type=\"button\" class=\"btn btn-info\" ng-model=\"item.isDefault\" btn-checkbox\n" +
+    "                        btn-checkbox-true=\"true\" btn-checkbox-false=\"false\">{{getDefaultText(item)}}\n" +
+    "                </button>\n" +
+    "            </td>\n" +
+    "            <td class=\"col5\"><a ng-click=\"remove($index)\"><span class=\"glyphicon glyphicon-remove\"></span></a></td>\n" +
+    "        </tr>\n" +
+    "        </tbody>\n" +
+    "    </table>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/checkboxList/checkboxListResult.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/checkboxList/checkboxListResult.html",
+    "<div class=\"form-group\" <% if(config.group){%>\n" +
+    "ng-init=\"<% _.each(config.group,function(item){%> vm.<%= item.modelName %> = <%= (!!item.isDefault) %>; <% });%>\"\n" +
+    "<% }%>>\n" +
+    "<label class=\"col-sm-2 control-label\"><%= config.label %></label>\n" +
+    "\n" +
+    "<div class=\"col-sm-10\">\n" +
+    "    <div class=\"btn-group\">\n" +
+    "        <% _.each(config.group,function(item){ %>\n" +
+    "        <button type=\"button\" class=\"btn btn-info\" ng-model=\"vm.<%= item.modelName%>\"\n" +
+    "                btn-checkbox>\n" +
+    "            <%= item.label %>\n" +
+    "        </button>\n" +
+    "        <%})%>\n" +
+    "    </div>\n" +
+    "</div>\n" +
     "</div>");
 }]);
 

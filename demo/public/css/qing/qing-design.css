@@ -5925,6 +5925,25 @@ td.visible-print {
 。text-editor {
   line-height: 20px;
 }
+.md-qing-checkboxlist-box .control-label {
+  padding-top: 0;
+}
+.md-qing-checkboxlist-box table .col1 {
+  width: 5%;
+}
+.md-qing-checkboxlist-box table .col2 {
+  width: 25%;
+}
+.md-qing-checkboxlist-box table .col3 {
+  width: 45%;
+}
+.md-qing-checkboxlist-box table .col4 {
+  width: 15%;
+}
+.md-qing-checkboxlist-box table .col5 {
+  width: 10%;
+  vertical-align: top;
+}
 .input-box-type {
   width: 80%;
 }
