@@ -1,0 +1,7 @@
+<div class="qing-btn-container" >
+    <!-- form 各个表单如何关联 取到form名字  我觉得还是要吧form放在一个 container内 -->
+    {{ config }}
+    <button type="button" class="btn btn-primary" action="<%= config.postUrl %>" <% if(config.btnDisable){%>ng-disabled="designForm.$invalid"<% }%>>
+        <%= config.btnText %>
+    </button>
+</div>
