@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-21 */
+/*! qing - v0.0.0 - 2013-11-27 */
 angular.module("qing", ["qing.template",
         "ui.bootstrap",
         "ngmodel.format",
@@ -7,7 +7,7 @@ angular.module("qing", ["qing.template",
         "ui.select2"])
     .constant("gridConfig", {
         "totalColumn": 12
-    });
+    })
 
 
 var qing = qing || {};
@@ -1402,7 +1402,7 @@ angular.module("design/services/modal/addCont.html", []).run(["$templateCache", 
     "\n" +
     "    <p ng-bind=\"options.description\" ng-show=\"options.description\"></p>\n" +
     "</div>\n" +
-    "<div class=\"modal-body\" ng-bind-html-unsafe=\"contentHtml\"></div>");
+    "<div class=\"modal-body\" bind-html-unsafe=\"contentHtml\"></div>");
 }]);
 
 angular.module("design/services/modal/modalBody.html", []).run(["$templateCache", function($templateCache) {
