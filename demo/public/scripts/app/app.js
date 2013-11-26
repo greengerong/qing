@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('qing.demo', [ 'qing'])
+angular.module('qing.demo', ['ngRoute','qing'])
     .config(function ($routeProvider) {
         $routeProvider
             .when('/', {
@@ -13,4 +13,6 @@ angular.module('qing.demo', [ 'qing'])
     })
     .controller('MainCtrl', function ($scope) {
 
-    });
+    }).config(['$sceProvider', function ($sceProvider) {
+        $sceProvider.enabled(false);
+    }]);

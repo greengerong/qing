@@ -8,5 +8,5 @@ angular.module("qing", ["qing.template",
         "ui.select2"])
     .constant("gridConfig", {
         "totalColumn": 12
-    });
+    })
 
