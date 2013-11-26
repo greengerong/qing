@@ -13,6 +13,4 @@ angular.module('qing.demo', ['ngRoute','qing'])
     })
     .controller('MainCtrl', function ($scope) {
 
-    }).config(['$sceProvider', function ($sceProvider) {
-        $sceProvider.enabled(false);
-    }]);
+    });
