@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-19 */
+/*! qing - v0.0.0 - 2013-11-21 */
 angular.module("qing", ["qing.template",
         "ui.bootstrap",
         "ngmodel.format",
@@ -700,6 +700,44 @@ angular.module('qing')
         }]);
 
 angular.module("qing")
+    .run(["pluginsService", "pluginType", "templateService", function (pluginsService, pluginType) {
+        pluginsService.register("submit", {
+            "title": "submit",
+            "description": "",
+            "type": pluginType.COMPONENT,
+            "events": {}
+        });
+    }])
+    .directive("submit", [
+        function () {
+            return {
+                restrict: 'EA',
+                templateUrl: "design/directives/submit/submit.html",
+                replace: true,
+                controller: ["$scope", function ($scope) {
+                    $scope.config = $scope.config || {
+                        btnDisable: true
+                    };
+                    $scope.getResult = function () {
+                        return {
+                            tpl: {
+                                url: "design/directives/submit/submitResult.html",
+                                data: {
+                                    config: $scope.config
+                                }
+                            },
+                            data: {
+                                "key": "config",
+                                "data": $scope.config
+                            }
+                        };
+                    };
+                }]
+            }
+        }])
+;
+
+angular.module("qing")
     .directive("textEditor", ["templateService",
         function (templateService) {
             return {
@@ -950,7 +988,7 @@ angular.module("qing").constant("pluginsConfig", {})
 
         }]);
 
-angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/checkboxList/checkboxList.html', 'design/directives/checkboxList/checkboxListResult.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/radioList/radioList.html', 'design/directives/radioList/radioListResult.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html', 'design/services/modal/modalBody.html']);
+angular.module('qing.template', ['common/directives/qingRootPanel/qingRootPanel.html', 'common/services/messageBox/messageBox.html', 'design/directives/checkboxList/checkboxList.html', 'design/directives/checkboxList/checkboxListResult.html', 'design/directives/inputBox/inputBox.html', 'design/directives/inputBox/inputBoxResult.html', 'design/directives/pluginName/qingPlugin.html', 'design/directives/qingAdd/qingAdd.html', 'design/directives/qingPanel/qingPanel.html', 'design/directives/radioList/radioList.html', 'design/directives/radioList/radioListResult.html', 'design/directives/rowContainer/rowContainer.html', 'design/directives/rowContainer/rowContainerResult.html', 'design/directives/submit/submit.html', 'design/directives/submit/submitResult.html', 'design/directives/textEditor/textEditorDesign.html', 'design/services/modal/addCont.html', 'design/services/modal/modalBody.html']);
 
 angular.module("common/directives/qingRootPanel/qingRootPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("common/directives/qingRootPanel/qingRootPanel.html",
@@ -1298,6 +1336,52 @@ angular.module("design/directives/rowContainer/rowContainerResult.html", []).run
     "        <qing-panel qing-mark=\"<%= guid.newId() %>\" vm=\"vm\"></qing-panel>\n" +
     "    </div>\n" +
     "    <% });%>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/submit/submit.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/submit/submit.html",
+    "<div class=\"md-qing-input-box\">\n" +
+    "    <div class=\"form-group\"\n" +
+    "         ng-class=\"{'has-error':designForm.modelName.$invalid,'has-success':designForm.modelName.$valid}\">\n" +
+    "        <label class=\"col-sm-2 control-label\">Post url</label>\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <input type=\"text\" name=\"postUrl\" class=\"form-control\" ng-model=\"config.postUrl\" ng-required=\"true\"\n" +
+    "                       ng-pattern=\"/([/w-]+/.)+[/w-]+.([^a-z])(/[/w- ./?%&=]*)?|[a-zA-Z0-9/-/.][/w-]+.([^a-z])(/[/w- ./?%&=]*)?/\">\n" +
+    "            <span class=\"help-block\" ng-show=\"designForm.postUrl.$error.required\">Post url required.</span>\n" +
+    "            <span class=\"help-block\"\n" +
+    "                  ng-show=\"designForm.postUrl.$error.pattern\">Post url is invalid.</span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"form-group\"\n" +
+    "         ng-class=\"{'has-error':designForm.modelName.$invalid,'has-success':designForm.modelName.$valid}\">\n" +
+    "        <label class=\"col-sm-2 control-label\">Button text</label>\n" +
+    "        <div class=\"col-sm-10\">\n" +
+    "            <input type=\"text\" name=\"btnText\" class=\"form-control\" ng-model=\"config.btnText\" ng-required=\"true\">\n" +
+    "            <span class=\"help-block\" ng-show=\"designForm.btnText.$error.required\">Button text required.</span>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"form-group\">\n" +
+    "        <div class=\"col-sm-offset-2 col-sm-10\">\n" +
+    "            <div class=\"checkbox\">\n" +
+    "                <label>\n" +
+    "                    <input type=\"checkbox\" ng-model=\"config.btnDisable\"  >\n" +
+    "                    disable by validate form\n" +
+    "                </label>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "    </div>\n" +
+    "</div>");
+}]);
+
+angular.module("design/directives/submit/submitResult.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("design/directives/submit/submitResult.html",
+    "<div class=\"qing-btn-container\" >\n" +
+    "    <!-- form 各个表单如何关联 取到form名字  我觉得还是要吧form放在一个 container内 -->\n" +
+    "    {{ config }}\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" action=\"<%= config.postUrl %>\" <% if(config.btnDisable){%>ng-disabled=\"designForm.$invalid\"<% }%>>\n" +
+    "        <%= config.btnText %>\n" +
+    "    </button>\n" +
     "</div>");
 }]);
 
