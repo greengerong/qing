@@ -1,4 +1,4 @@
-/*! qing - v0.0.0 - 2013-11-27 */
+/*! qing - v0.0.0 - 2013-11-28 */
 angular.module("qing", ["qing.template",
         "ui.bootstrap",
         "ngmodel.format",
